@@ -1,9 +1,19 @@
-using System;
+// using system;
 
-class Program
+class program
 {
     static void Main(string[] args)
     {
-        Console.WriteLine("Hello Prep1 World!");
+        // ask the user for there name
+        Console.Write("What is your first name?");
+        string first_name = Console.ReadLine();
+        
+        Console.Write("What is your second name? ");
+        string last_name = Console.ReadLine();
+        
+        // display the output
+        Console.WriteLine($"Your name is {last_name} {first_name}" +
+                          $" {last_name}");
     }
+    
 }
