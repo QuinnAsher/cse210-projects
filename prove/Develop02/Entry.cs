@@ -16,6 +16,6 @@ public class Entry
 
     public string FormattedEntry()
     {
-        return $"Dte: {_dateStamp} - {_prompt}\n{_userInput}";
+        return $"Date: {_dateStamp} - {_prompt}\n{_userInput}";
     }
 }

@@ -17,13 +17,13 @@ class Program
 
         do
         {
-            Console.WriteLine("Please select one of the options:\n1. Write\n2. Display\n3. Load\n4. Save\n5. Quit");
-            Console.WriteLine("What would you like to do?");
+            Console.WriteLine("Please select one of the options:\n1. Write\n2. Display\n3. Load\n4. Save\n5. Delete\n6. Quit");
+            Console.Write("What would you like to do? ");
             string userChoiceStr = Console.ReadLine();
             
             userChoiceInt = int.Parse(userChoiceStr);
 
-            // use a swich statement to approprialtely handle user choice
+            // use a switch statement to appropriately handle user choice
             switch (userChoiceInt)
             {
                 case 1:
@@ -33,6 +33,7 @@ class Program
                     Console.WriteLine(randomPrompt);
                     Console.Write("> ");
                     userInput = Console.ReadLine();
+                    // Console.WriteLine();
                     
                     // add the entry to the entry list
                     journal.AddEntry(randomPrompt, userInput);
@@ -73,6 +74,10 @@ class Program
                     journal.DeleteEntries(fileName);
                     break;
                 }
+                
+                default:
+                    Console.WriteLine("Your choice is invalid. Please select a number from 1 to 5.");
+                    break;
             }
             Console.WriteLine("");
         } while (userChoiceInt != 6);  // ends the loop when the user enters quit
