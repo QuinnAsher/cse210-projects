@@ -1,16 +1,18 @@
 ﻿namespace Develop02;
 
-// A class for randomly generating prompts
-public class PromptGenerator
-{
-    public Random _random = new Random();
-    public List<string> _promptLIst = new List<string>();
-    public HashSet<int> _assignedIndex= new HashSet<int>();
+public class  PromptGenerator
+{   
+    // class attributes
+    public List<string> _promptList = new List<string>();
+
+    public Random _randomNum = new Random();
+    public int _randomIndex;
+    public HashSet<int> _assingnedIndex = new HashSet<int>();
     
     // class constructor
     public PromptGenerator()
     {
-        _promptLIst.AddRange(new List<string>
+        _promptList.AddRange(new List<string>
         {
             "What motivates me to study?",
             "How can I feel the Holy Spirit's promptings?",
@@ -33,24 +35,33 @@ public class PromptGenerator
             "What does a perfect day look like for me?",
             "What is my definition of success and how do I plan to achieve it?"
         });
-
+        
+        // Initialize the assigned indices set with -1 (no index assigned yet)
+        for (int i = 0; i < _promptList.Count; i++)
+        {
+            _assingnedIndex.Add(-1);
+        }
+        // int promptListNum = _promptList.Count;
+        // _randomIndex = _randomNum.Next(promptListNum);
     }
-
-    public string GetRamdomPrompt()
+    
+    
+    // create a method to check if the number has been assigned and get a random prompt
+    public string GetRandomPrompt()
     {
-        // make sure that a prompt is not assigned more than one in a session
-        int promptListLen = _promptLIst.Count;
+        int promptListNum = _promptList.Count;
         int promptIndex;
 
         do
         {
-            promptIndex = _random.Next(promptListLen);
-        } while (_assignedIndex.Contains(promptIndex));  // loop runs as long as promptIndex is in assinedIndex
-        
-        // assign the unassigned promptIndex to the hashset
-        _assignedIndex.Add(promptIndex);
+            promptIndex = _randomNum.Next(promptListNum);
 
-        string randomPrompt = _promptLIst[promptIndex];
+        } while (_assingnedIndex.Contains(promptIndex));
+        
+        // mark the index as assigned
+        _assingnedIndex.Add(promptIndex);
+        string randomPrompt = _promptList[promptIndex];
         return randomPrompt;
     }
 }
+

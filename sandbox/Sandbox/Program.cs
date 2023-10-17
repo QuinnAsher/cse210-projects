@@ -1,69 +1,78 @@
-// using System;
-// using sandbox;
-//
-// namespace sandbox // Replace "YourNamespace" with your desired namespace name
-// {
-//     public class Person
-//     {
-//         public string _givenName = "";
-//         public string _familyName = "";
-//
-//         public Person()
-//         {
-//         }
-//
-//         public void ShowEasternName()
-//         {
-//             Console.WriteLine($"{_familyName}, {_givenName}");
-//         }
-//
-//         public void ShowWesternName()
-//         {
-//             Console.WriteLine($"{_givenName}, {_familyName}");
-//         }
-//     }
-//
-//
-//     
-// }
-//
-// List<Entry> entryList = new List<Entry>();
-// Console.WriteLine("Welcome to the Journal Program!");
-// bool isJournaling = true;
-// while (isJournaling)
-// {
-//     string prompt =
-//         "Please select one of the following choices:\n1. Write\n2. Display\n3. Load\n4. Save\n5. Quit\nWhat would you like to do? ";
-//
-//     Console.Write(prompt);
-//     string userEntry = Console.ReadLine();
-//     int userSelection = Convert.ToInt32(userEntry);
-//
-//     switch (userSelection)
-//     {
-//         case 1:
-//             PromptGenerator promptGenerator = new PromptGenerator();
-//             string randomPrompt = promptGenerator.GetRandomPrompt();
-//             Console.WriteLine(randomPrompt);
-//             Console.Write("> ");
-//             string userAnswer = Console.ReadLine();
-//             Entry newEntry = new Entry(randomPrompt, userAnswer);
-//             entryList.Add(newEntry);
-//             break;
-//         case 2:
-//             Console.WriteLine("Display");
-//             break;
-//         case 3:
-//             Console.WriteLine("Load");
-//             break;
-//         case 4:
-//             Console.WriteLine("Save");
-//             break;
-//         case 5:
-//             isJournaling = false;
-//             break;
-//         default:
-//             Console.WriteLine("Your choice is invalid. Please select a number from 1 to 5.");
-//             break;
-//     };
-//     Console.WriteLine();
+public class Program
+{
+    static void Main(string[] args)
+    {
+        FractionCalculator fraction1 = new();
+        Console.WriteLine($"{fraction1.GetFractionString()}\n{fraction1.GetDecimalValue()}");
+        Console.WriteLine();
+
+        FractionCalculator fraction2 = new(3);
+        Console.WriteLine($"{fraction2.GetFractionString()}\n{fraction2.GetDecimalValue()}");
+        Console.WriteLine();
+
+        FractionCalculator fraction3 = new(6, 3);
+        Console.WriteLine($"{fraction3.GetFractionString()}\n{fraction3.GetDecimalValue()}");
+        
+}
+    
+    public class FractionCalculator
+    {
+        private int _top;
+        private int _bottom;
+
+        public FractionCalculator()
+        {
+            // default value
+            _top = 1;
+            _bottom = 1;
+        }
+
+        public FractionCalculator(int wholeNumber)
+        {
+            _bottom = 1;
+        }
+
+        public FractionCalculator(int topNum, int bottomNum)
+        {
+            _top = topNum;
+            _bottom = bottomNum;
+        }
+
+
+        public int GetTop()
+        {
+            return _top;
+        }
+
+
+        public void SetTop(int top)
+        {
+            _top = top;
+        }
+
+
+        public int GetBottom()
+        {
+            return _bottom;
+        }
+
+
+        public void SetBottom(int bottom)
+        {
+            _bottom = bottom;
+        }
+
+
+        public string GetFractionString()
+        {
+            return $"{_top} / {_bottom}";
+        }
+
+
+        public double GetDecimalValue()
+        {
+            double calculateDec = (double) _top / _bottom;
+            return calculateDec;
+        }
+    }
+}

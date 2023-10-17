@@ -58,6 +58,7 @@ class Program
 
                 case 4:
                 {
+                    Console.WriteLine();
                     // ask the user for the file name and them call the SaveEntries method
                     Console.WriteLine("Enter the name of the file you would like to save your journal (eg: ournal)" +
                                       ".txt");
