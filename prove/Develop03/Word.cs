@@ -3,54 +3,65 @@
 public class Word
 {
     private string _scriptureText;
-    public List<string> _wordList;
+    private List<string> _wordList;
+
 
     public Word()
     {
-        _scriptureText = "For God so loved the world, that he gave his only begotten Son," +
+        _scriptureText = "For God so loved the world, that he gave his only begotten Son, " +
                          "that whosoever believeth in him should not perish, but have everlasting life.";
-        _wordList = _scriptureText.Split().ToList();  // creates an array of substrings seperated by a comma
-        
+        _wordList = _scriptureText.Split().ToList();  // converts the scripture text to a list of words
     }
 
     public Word(string scriptureText)
     {
         _scriptureText = scriptureText;
-        _wordList = _scriptureText.Split().ToList();  // creates an array of substrings seperated by a comma
-
+        _wordList = _scriptureText.Split().ToList();  // converts the scripture text to a list of words
     }
+
 
     private int RandomIndex()
     {
-        // This function generates a unique random index
-        List<int> assignedIndex = new List<int>();
         Random random = new Random();
-        int wordLength = _wordList.Count;
-        int randomIndex = random.Next(wordLength);
-        // return randomIndex;
-
+        List<int> assignedIndex = new List<int>();  // this empty list will hold index assigned by the random object
+        int wordLen = _wordList.Count;
+        int randomIndex = random.Next(wordLen);
+        
+        // making sure that a randomIndex cannot be the same in one session
         while (assignedIndex.Contains(randomIndex))
         {
-            randomIndex = random.Next(wordLength);
+            randomIndex = random.Next(wordLen);
 
-            if (assignedIndex.Count == wordLength)
+            // all the index has been assigned
+            if (assignedIndex.Count == _wordList.Count)
             {
                 assignedIndex = new List<int>();
             }
         }
-        
-        if (assignedIndex.Count == wordLength)
-        {
-            assignedIndex = new List<int>();
-        }
-
+        assignedIndex.Add(randomIndex);
         return randomIndex;
-
     }
+
 
     public string GetWord()
     {
-        string givenWord = _wordList[RandomIndex()];
-        return givenWord;
-    }  
+        int index = RandomIndex();
+        string randomWord = _wordList[index];
+        return randomWord;
+    }
+    
+    public bool IsHidden()
+    {
+        string word = GetWord();
+        if (!_wordList.Contains(word))
+        {
+            return true;
+        }
+
+        else
+        {
+            return false;
+        }
+        
+    }
 }
