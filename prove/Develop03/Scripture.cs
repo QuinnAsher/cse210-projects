@@ -71,17 +71,28 @@ public class Scripture
 
     }
     
-    public string GetRenderedText()
+    private string Sentence()
     {
-        string renderedText = $"{_reference.FormatReference()} {_scriptureText}";
-        return renderedText;
-    }
+        // string renderedText = $"{_reference.FormatReference()} {_scriptureText}";
+        // return renderedText;
 
-    public void Debugging()
-    {
+        string sentence = "";
         foreach (Word word in _wordsLIst)
         {
-            Console.WriteLine(word);
+            sentence += word.WordPropery;
+            sentence += " ";  // concatenate a space after each word
         }
+        return sentence;
+    }
+
+    public string RenderedText()
+    {
+        string text = $"{_reference.FormatReference()} {Sentence()}";
+        return text;
+    }
+    
+    public void Debugging()
+    {
+            Console.WriteLine(RenderedText());
     }
 }
