@@ -50,18 +50,8 @@ public class Word
         return randomWord;
     }
     
-    public bool IsHidden()
+    public bool IsHidden(string word)
     {
-        string word = GetWord();
-        if (!_wordList.Contains(word))
-        {
-            return true;
-        }
-
-        else
-        {
-            return false;
-        }
-        
+        return !_wordList.Contains(word);
     }
 }

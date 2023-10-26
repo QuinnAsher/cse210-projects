@@ -88,16 +88,25 @@ public class Reference
     }
     
     
-    public string SingleReference()
-    {
-        string formattedReference = $"{_book} {_chapter}:{_startVerse}";
-        return formattedReference;
-    }
+    // public string SingleReference()
+    // {
+    //     string formattedReference = $"{_book} {_chapter}:{_startVerse}";
+    //     return formattedReference;
+    // }
 
     public string MultipleReference()
     {
-        string formattedReference = $"{_book} {_chapter}:{_startVerse}-{_endVerse}";
-        return formattedReference;
+        if (_endVerse >= 1)
+        {
+            string formattedReference = $"{_book} {_chapter}:{_startVerse}-{_endVerse}";
+            return formattedReference;
+        }
+
+        else
+        {
+            string formattedReference = $"{_book} {_chapter}:{_startVerse}";
+            return formattedReference;
+        }
     }
 }
 

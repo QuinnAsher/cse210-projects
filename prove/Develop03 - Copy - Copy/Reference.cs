@@ -7,38 +7,39 @@ public class Reference
     private int _startVerse;
     private int _endVerse;
 
-    public Reference()
+
+    // Class Constructors
+    public Reference()  // default intance
     {
         _book = "John";
         _chapter = 3;
         _startVerse = 16;
         _endVerse = 20;
     }
-
-    public Reference(string book, int chapter, int startVerse, int endVerse)
-    {
-        _book = book;
-        _chapter = chapter;
-        _startVerse = startVerse;
-        _endVerse = endVerse;
-    }
-
+    
     public Reference(string book, int chapter, int startVerse)
     {
         _book = book;
         _chapter = chapter;
         _startVerse = startVerse;
     }
-
     
-    // Gettere and setters
+    public Reference(string book, int chapter, int startVerse, int endVerse)
+    {
+        _book = book;
+        _chapter = chapter;
+        _startVerse = startVerse;
+        _endVerse = startVerse;
+    }
+    
+    // Class getters and setters
     public string BookPropery
     {
         get
         {
-            return _book; 
+            return _book;
         }
-        
+
         set
         {
             _book = value;
@@ -46,7 +47,7 @@ public class Reference
     }
 
 
-    public int ChapterPropery
+    public int ChapterProperty
     {
         get
         {
@@ -59,8 +60,7 @@ public class Reference
         }
     }
 
-
-    public int StartVersePropery
+    public int StartVerseProperty
     {
         get
         {
@@ -73,8 +73,7 @@ public class Reference
         }
     }
 
-
-    public int EndVersePropeety
+    public int EndVersePropery
     {
         get
         {
@@ -88,16 +87,20 @@ public class Reference
     }
     
     
-    public string SingleReference()
+    // Class method
+    public string FormatReference()
     {
-        string formattedReference = $"{_book} {_chapter}:{_startVerse}";
-        return formattedReference;
-    }
+        string formattedReference;
+        if (_endVerse >= 1)
+        {
+            formattedReference = $"{_book} {_chapter} - {_startVerse}:{_endVerse}";
+        }
 
-    public string MultipleReference()
-    {
-        string formattedReference = $"{_book} {_chapter}:{_startVerse}-{_endVerse}";
+        else
+        {
+            formattedReference = $"{_book} {_chapter} - {_startVerse}";
+        }
+
         return formattedReference;
     }
 }
-

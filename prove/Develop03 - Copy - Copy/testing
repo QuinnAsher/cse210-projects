@@ -1,0 +1,62 @@
+﻿namespace Develop03;
+
+public class Word
+{
+    private string _scriptureText;
+    private List<string> _wordList;
+    private Random _random;
+    private bool _isHidden;
+
+
+    // Class Constructors
+    public Word(bool isHidden)
+    {
+        _scriptureText =  "For God so loved the world, that he gave his only begotten Son, " +
+                          "that whosoever believeth in him should not perish, but have everlasting life.";
+        _wordList = _scriptureText.Split().ToList();
+        _random = new Random();
+    }
+    public Word(string scriptureText)
+    {
+        _scriptureText = scriptureText;
+        _wordList = _scriptureText.Split().ToList();
+        _random = new Random();
+    }
+    
+    
+    // Methods
+    public string GetWerd()
+    {
+        int index = _random.Next(_wordList.Count);
+        string word = _wordList[index];
+        return word;
+    }
+
+
+    // private void isHidden(List<string> Word)
+    // {
+    //     if (_wordList.Contains(GetWerd()))
+    //     {
+    //         _isHidden = true;
+    //     }
+    //
+    //     else
+    //     {
+    //         _isHidden = false;
+    //     }
+    // }
+    //
+    // // a setter to allow other classes to know
+    // public bool ISHiddenPropery
+    // {
+    //     get
+    //     {
+    //         return _isHidden;
+    //     }
+    // }
+    
+    // Random random = new Random();
+            // int index = random.Next(_scriptureWordsList.Count);
+            // return _scriptureWordsList[index];
+
+}
