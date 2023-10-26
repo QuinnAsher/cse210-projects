@@ -1,23 +1,24 @@
-using System;
-using Develop03;
+namespace Develop03;
 
-class Program
+
+public class Program
 {
     static void Main(string[] args)
     {
         Reference reference = new();
-        Console.WriteLine(reference.SingleReference());
-        Console.WriteLine(reference.MultipleReference());
-        
-        Console.WriteLine(reference.BookPropery);
-        reference.BookPropery = "David";
-        Console.WriteLine(reference.BookPropery);
+        Word word = new();
+        Console.WriteLine(reference.FormatReference());
 
-        Word word = new Word();
-        for (int i = 0; i < 24; i++)
+        Scripture scripture = new Scripture();
+
+        foreach (var i in scripture._wordsLIst)
         {
-            Console.WriteLine(word.GetWord());
+            // Console.WriteLine(i._word);
         }
 
+        Console.WriteLine(scripture.GetRenderedText());
+        
+        scripture.HideWords();
+        scripture.Debugging();
     }
 }

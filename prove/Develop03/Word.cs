@@ -1,67 +1,63 @@
 ﻿namespace Develop03;
 
+
 public class Word
 {
-    private string _scriptureText;
-    private List<string> _wordList;
-
-
-    public Word()
+    private string _word;
+    private bool _isHidden;
+    
+    
+    // Class constructors
+    public Word()  // default constructor
     {
-        _scriptureText = "For God so loved the world, that he gave his only begotten Son, " +
-                         "that whosoever believeth in him should not perish, but have everlasting life.";
-        _wordList = _scriptureText.Split().ToList();  // converts the scripture text to a list of words
+        _word = "God";
+        _isHidden = false;
     }
 
-    public Word(string scriptureText)
+    public Word(string word)
     {
-        _scriptureText = scriptureText;
-        _wordList = _scriptureText.Split().ToList();  // converts the scripture text to a list of words
-    }
-
-
-    private int RandomIndex()
-    {
-        Random random = new Random();
-        List<int> assignedIndex = new List<int>();  // this empty list will hold index assigned by the random object
-        int wordLen = _wordList.Count;
-        int randomIndex = random.Next(wordLen);
-        
-        // making sure that a randomIndex cannot be the same in one session
-        while (assignedIndex.Contains(randomIndex))
-        {
-            randomIndex = random.Next(wordLen);
-
-            // all the index has been assigned
-            if (assignedIndex.Count == _wordList.Count)
-            {
-                assignedIndex = new List<int>();
-            }
-        }
-        assignedIndex.Add(randomIndex);
-        return randomIndex;
-    }
-
-
-    public string GetWord()
-    {
-        int index = RandomIndex();
-        string randomWord = _wordList[index];
-        return randomWord;
+        _word = word;
+        _isHidden = false;
     }
     
-    public bool IsHidden()
+    
+    // class getter
+    public bool GetVisibility
     {
-        string word = GetWord();
-        if (!_wordList.Contains(word))
+        get
         {
-            return true;
+            return _isHidden;
         }
 
-        else
+        set
         {
-            return false;
+            _isHidden = value;
         }
-        
+
     }
+
+    public string WordPropery
+    {
+        get
+        {
+            return _word;
+        }
+
+        set
+        {
+            _word = value;
+        }
+    }
+    
+    // class methods to make visibility false or true
+    public void Show()
+    {
+        _isHidden = false;
+    }
+
+    public void Hide()
+    {
+        _isHidden = true;
+    }
+    
 }
