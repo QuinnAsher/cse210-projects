@@ -10,6 +10,7 @@ public class SaveAndLoadScripture
     private string _scriptureText;
     private bool _fileExit;
     private Reference _reference;
+    // private ScriptureLibrary scriptureLibrary = new ScriptureLibrary();
     // private ScriptureLibrary _scriptureLibrary;
 
     
@@ -22,7 +23,7 @@ public class SaveAndLoadScripture
         _endVerse = 0;
         _scriptureText =
             "For God so loved the world, that he gave his only begotten Son, " +
-            "that whosoever believeth in him should not perish, but have everlasting life.";
+            "that whosoever believeth  testingin him should not perish, but have everlasting life.";
         
         // check for valid extension
         if (Path.HasExtension(_filePath) && Path.GetExtension(_filePath) != ".csv" || !Path.HasExtension(_filePath))
@@ -139,7 +140,7 @@ public class SaveAndLoadScripture
         {
             using (writer)
             {
-                writer.WriteLine("Book,Chapter,Start Verse,End Verse,Scripture");
+                writer.WriteLine("Book;Chapter;Start Verse;End Verse;Scripture");
                 writer.WriteLine($"{_book};{_chapter};{_endVerse};{_endVerse};{_scriptureText}");
             }
         }
@@ -162,15 +163,16 @@ public class SaveAndLoadScripture
             Reference reference = new Reference(_book, _chapter, _startVerse, _endVerse);
             Scripture scripture = new Scripture(reference, _scriptureText);
             
+            
             // TODO: come back to this later and implement the scripture library tag
             // Initialize a scripture object
-            // ScriptureLibrary scriptureLibrary = new ScriptureLibrary();
-            // Adds all the scriptures in from the ScriptureData csv to the scripture library list
+            //Adds all the scriptures in from the ScriptureData csv to the scripture library list
             // scriptureLibrary.AddToLibraryList(reference, _scriptureText);
 
-
         }
+        
     }
+
 }
 
 // TODO: create a separate class for handing Loading because of too much fields
