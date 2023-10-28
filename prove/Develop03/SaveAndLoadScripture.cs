@@ -10,7 +10,7 @@ public class SaveAndLoadScripture
     private string _scriptureText;
     private bool _fileExit;
     private Reference _reference;
-    private ScriptureLibrary _scriptureLibrary;
+    // private ScriptureLibrary _scriptureLibrary;
 
     
    public SaveAndLoadScripture()
@@ -35,13 +35,14 @@ public class SaveAndLoadScripture
    }
    
    
-   public SaveAndLoadScripture(string filePath, string book, int chapter, int startVerse, int endVerse)
+   public SaveAndLoadScripture(string filePath, string book, int chapter, int startVerse, int endVerse, string scriptureText)
    {
         
        _book = book;
        _chapter = chapter;
        _startVerse = startVerse;
        _endVerse = endVerse;
+       _scriptureText = scriptureText;
         
        // check for valid extension
        if (Path.HasExtension(filePath) && Path.GetExtension(filePath) != ".csv" || !Path.HasExtension(filePath))
@@ -126,7 +127,7 @@ public class SaveAndLoadScripture
         StreamWriter writer = new StreamWriter(_filePath, true);
         if (_fileExit)  // file exits so just append to the file
         {
-            // a colon is used as seperator for the csv because the scripture text haas space and commas
+            // a colon is used as separator for the csv because the scripture text haas space and commas
             // so I have to use something that will not affect the code later
             using (writer)
             {
@@ -148,10 +149,11 @@ public class SaveAndLoadScripture
     {
         string[] lines = File.ReadAllLines(_filePath);
 
+        // Reminder: in each loop, a reference and scripture will be added to the Scripture Library
         foreach (string line in lines.Skip(1))  // skips the first line which is the header of the csv
         {
             string[] parts = line.Split(";");
-            _book= parts[0];
+            _book = parts[0];
             _chapter = int.Parse(parts[1]);
             _startVerse = int.Parse(parts[2]);
             _endVerse= int.Parse(parts[3]);
@@ -159,10 +161,12 @@ public class SaveAndLoadScripture
             
             Reference reference = new Reference(_book, _chapter, _startVerse, _endVerse);
             Scripture scripture = new Scripture(reference, _scriptureText);
-            ScriptureLibrary scriptureLibrary = new ScriptureLibrary();
             
+            // TODO: come back to this later and implement the scripture library tag
+            // Initialize a scripture object
+            // ScriptureLibrary scriptureLibrary = new ScriptureLibrary();
             // Adds all the scriptures in from the ScriptureData csv to the scripture library list
-            scriptureLibrary.AddToLibraryList(reference, _scriptureText);
+            // scriptureLibrary.AddToLibraryList(reference, _scriptureText);
 
 
         }
