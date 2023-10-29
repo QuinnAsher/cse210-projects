@@ -9,8 +9,8 @@ public class Scripture
     private Reference _reference;
     private bool _useDefault;
     private ScriptureLibraryLoader _libraryLoader;
-    Random random = new Random();
-    List<int> assignedIndex = new List<int>();
+    private Random random = new Random();
+    private List<int> assignedIndex = new List<int>();
     
     
     // class constructors
