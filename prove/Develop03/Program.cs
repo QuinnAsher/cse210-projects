@@ -25,22 +25,63 @@ public class Program
         {
             case 1:
             {
-                Console.WriteLine("Enter the book, chapter, start verse, end verse and text seperated by comma.\n" +
-                                  "John,3,16,0");
-                string userInput = Console.ReadLine();
+                // Console.Write("Enter the book, chapter, start verse, end verse and text seperated by comma.\n" +
+                //               "John,3,16,0,For God....... ");
+                while (true)
+                {
+                    Console.Clear(); // Clear the console at the start of a new entry
+                    Console.Write("Enter the book, chapter, start verse, end verse and text seperated by comma.\n" +
+                    "John,3,16,0,For God....... ");
+                    string userInput = Console.ReadLine();
                 
-                // convert the user input to a list
-                List<string> scriptureInfo = new List<string>(userInput.Split(",").ToList());
+                    // convert the user input to a list
+                    List<string> scriptureInfo = new List<string>(userInput.Split(",").ToList());
+
+                    if (scriptureInfo.Count > 4)
+                    {
+                        // extract the scripture info, assuming the user inputted the details accordingly
+                        string book = scriptureInfo[0];
+                        int chapter = int.Parse(scriptureInfo[1]);
+                        int startVerse = int.Parse(scriptureInfo[2]);
+                        int endVerse = int.Parse(scriptureInfo[3]);
+                        string text = scriptureInfo[4];
                 
-                // extract the scripture info, assuming the user inputted the details accordingly
-                string book = scriptureInfo[0];
-                string text = scriptureInfo[1];
-                int chapter = int.Parse(scriptureInfo[2]);
-                int startVerse = int.Parse(scriptureInfo[3]);
-                int endVerse = int.Parse(scriptureInfo[4]);
+                        // instantiate an object of saving to file
+                        saveToFile = new SaveScriptureToFile(book, chapter, startVerse, endVerse, text);
+                        saveToFile.WriteToFile();  // write to the file
+                    }
+                    
+                    else
+                    {
+                        Console.WriteLine("Invalid input. Please provide book, chapter, start verse, end verse, and text separated by commas.");
+                    }
+                    
+                    //TODO: create a while loop to handle user input
+                    
+                    Console.WriteLine("Press Enter to continue or any key to exit");
+                    // string exit = Console.ReadLine();
+                    
+                    // the key info gets the type of key
+                    ConsoleKeyInfo keyInfo = Console.ReadKey(true);
+
+                    if (keyInfo.Key != ConsoleKey.Enter)
+                    {
+                        break;  // end the loop when any key is entered
+                    }
+
+                    else
+                    {
+                        continue;
+                    }
+                    Console.Clear();  // clear the console
+                }
                 
-                // instantiate an object of saving to file
-                saveToFile = new SaveScriptureToFile(book, chapter, startVerse, endVerse, text);
+                break;
+            }
+
+            case 2:
+            {
+                
                 break;
             }
         }
