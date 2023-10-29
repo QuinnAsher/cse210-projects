@@ -5,22 +5,64 @@ public class Scripture
 {
     private string _scriptureText;
     private List<string> _scriptureWordsList;
-    public List<Word> _wordsLIst;
+    private List<Word> _wordsLIst;
     private Reference _reference;
+    private bool _useDefault;
+    // private ScriptureLibrary _scriptureLibrary;
+    private ScriptureLibraryLoader _libraryLoader;
+    Random random = new Random();
+    List<int> assignedIndex = new List<int>();
     
     
-    //class constructors
-    public Scripture()
-    {
-        _reference = new Reference();  // default reference
-        _scriptureText =  "For God so loved the world, that he gave his only begotten Son, " +
-                      "that whosoever believeth in him should not perish, but have everlasting life.";
-        
-        // convert scripture text to a list of words
-        _scriptureWordsList = new List<string>(_scriptureText.Split().ToList());
-        _wordsLIst = new List<Word>();
-        AddScriptureWords();  // adds all scripture text words to a list of Word objects
-    }
+    // class constructors
+     public Scripture()
+     {
+         _reference = new Reference();  // default reference
+         _scriptureText =  "For God so loved the world, that he gave his only begotten Son, " +
+                       "that whosoever believeth in him should not perish, but have everlasting life.";
+         
+         // convert scripture text to a list of words
+         _scriptureWordsList = new List<string>(_scriptureText.Split().ToList());
+         _wordsLIst = new List<Word>();
+         AddScriptureWords();  // adds all scripture text words to a list of Word objects
+     }
+
+
+     public Scripture(bool useDefault)
+     {
+         _libraryLoader = new ScriptureLibraryLoader();
+         _libraryLoader.LoadScripture();
+         // _libraryLoader.LenOfList();
+         Tuple<Reference, string> referenceAndText = _libraryLoader.GetReferenceAndScriptureText();
+
+            
+         if (referenceAndText != null)
+         {
+             _reference = referenceAndText.Item1;
+             _scriptureText = referenceAndText.Item2;
+             
+             _scriptureWordsList = new List<string>(_scriptureText.Split().ToList());
+         }
+         _wordsLIst = new List<Word>();
+         AddScriptureWords();  // adds all scripture text words to a list of Word objects
+         
+         
+     }
+
+    //
+    // public Scripture()
+    // {
+    //     _scriptureLibrary = new ScriptureLibrary();
+    //     Tuple<Reference, string> referenceAndScripture = _scriptureLibrary.ReferenceAndScriptureText();
+    //     _reference = referenceAndScripture.Item1;
+    //     _scriptureText = referenceAndScripture.Item2;
+    //     
+    //     // convert scripture text to a list of words
+    //     _scriptureWordsList = new List<string>(_scriptureText.Split().ToList());
+    //     _wordsLIst = new List<Word>();
+    //     AddScriptureWords();  // adds all scripture words to a list of Word objects
+    //
+    // }
 
     public Scripture(Reference reference, string scriptureText)
     {
@@ -33,6 +75,15 @@ public class Scripture
         AddScriptureWords();  // adds all scripture text words to a list of Word objects
     }
 
+
+    public int LengthOfWordList
+    {
+        get
+        {
+            return _wordsLIst.Count;
+        }
+    }
+    
     private void AddWord(string word)
     {
         // This method adds a new word object to the Word list
@@ -51,43 +102,71 @@ public class Scripture
 
     private int RandomIndex()
     {
-        Random random = new Random();
-        int randomIndex = random.Next(_wordsLIst.Count);
+        int randomIndex;
+
+        do
+        {
+            randomIndex = random.Next(_wordsLIst.Count);
+        } while (assignedIndex.Contains(randomIndex));
+        
+        // add the random index to the assigned index
+        assignedIndex.Add(randomIndex);
         return randomIndex;
     }
-    
-    
-    public void HideWords()
+
+
+    public string loopContions()
     {
-        Word word = _wordsLIst[RandomIndex()];
-        
-        // check visibility of the word
-        bool isHidden = word.GetVisibility;
-        if (!isHidden) // word is not hidden
+        string comparer = "";
+        foreach (string word in _scriptureWordsList)
         {
-            word.WordPropery = new string('_', word.WordPropery.Length);
-            word.Hide();  // isHidden is now true
+           string w = new string('_', word.Length);
+           comparer += w;
+           comparer += " ";
         }
 
+        string text = $"{_reference.FormatReference()} {comparer}";
+        return text;
     }
     
-    private string Sentence()
+    public void HideWord()
+    {
+        int index = RandomIndex();
+    
+        if (index >= 0 && index < _wordsLIst.Count)
+        {
+            Word word = _wordsLIst[index];
+        
+            // check visibility of the word
+            bool isHidden = word.GetVisibility;
+            if (!isHidden) // word is not hidden
+            {
+                word.WordPropery = new string('_', word.WordPropery.Length);
+                word.Hide();  // isHidden is now true
+            }
+        }
+    }
+
+    
+    // TODO: create a ShowWord() method for better interactivity
+    
+    private string WordListToSentence()
     {
         // string renderedText = $"{_reference.FormatReference()} {_scriptureText}";
         // return renderedText;
 
-        string sentence = "";
+        string toSentence = "";
         foreach (Word word in _wordsLIst)
         {
-            sentence += word.WordPropery;
-            sentence += " ";  // concatenate a space after each word
+            toSentence += word.WordPropery;
+            toSentence += " ";  // concatenate a space after each word
         }
-        return sentence;
+        return toSentence;
     }
 
     public string RenderedText()
     {
-        string text = $"{_reference.FormatReference()} {Sentence()}";
+        string text = $"{_reference.FormatReference()} {WordListToSentence()}";
         return text;
     }
     

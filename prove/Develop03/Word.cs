@@ -21,7 +21,7 @@ public class Word
     }
     
     
-    // class getter
+    // class getters and setters
     public bool GetVisibility
     {
         get

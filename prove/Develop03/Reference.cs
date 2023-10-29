@@ -14,7 +14,7 @@ public class Reference
         _book = "John";
         _chapter = 3;
         _startVerse = 16;
-        _endVerse = 20;
+        _endVerse = 0;
     }
     
     public Reference(string book, int chapter, int startVerse)
@@ -29,7 +29,7 @@ public class Reference
         _book = book;
         _chapter = chapter;
         _startVerse = startVerse;
-        _endVerse = startVerse;
+        _endVerse = endVerse;
     }
     
     // Class getters and setters
@@ -91,7 +91,7 @@ public class Reference
     public string FormatReference()
     {
         string formattedReference;
-        if (_endVerse >= 1)
+        if (_endVerse > 0)
         {
             formattedReference = $"{_book} {_chapter} - {_startVerse}:{_endVerse}";
         }

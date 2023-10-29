@@ -1,6 +1,6 @@
 ﻿namespace Develop03;
 
-public class SaveAndLoadScripture
+public class SaveScriptureToFile
 {
     private string _filePath;
     private string _book;
@@ -14,7 +14,7 @@ public class SaveAndLoadScripture
     // private ScriptureLibrary _scriptureLibrary;
 
     
-   public SaveAndLoadScripture()
+   public SaveScriptureToFile()
    {
        _filePath = "scriptureData";
         _book = "John";
@@ -36,9 +36,8 @@ public class SaveAndLoadScripture
    }
    
    
-   public SaveAndLoadScripture(string filePath, string book, int chapter, int startVerse, int endVerse, string scriptureText)
+   public SaveScriptureToFile(string book, int chapter, int startVerse, int endVerse, string scriptureText ,string filePath="scriptureData")
    {
-        
        _book = book;
        _chapter = chapter;
        _startVerse = startVerse;
@@ -56,71 +55,6 @@ public class SaveAndLoadScripture
    }
 
    
-   // class getters and setters  // for reminder, if this does not return the word from the file move it down
-   public string BookProperty
-   {
-       get
-       {
-           return _book;
-       }
-
-       set
-       {
-           _book = value;
-       }
-   }
-
-   public int ChapterProperty
-   {
-       get
-       {
-           return _chapter;
-       }
-
-       set
-       {
-           _chapter = value;
-       }
-   }
-
-   public int StartVersePropery
-   {
-       get
-       {
-           return _startVerse;
-       }
-
-       set
-       {
-           _startVerse = value;
-       }
-   }
-
-   public int EndVerseProperty
-   {
-       get
-       {
-           return _endVerse;
-       }
-
-       set
-       {
-           _endVerse = value;
-       }
-   }
-
-   public string ScriptureTextProperty
-   {
-       get
-       {
-           return _scriptureText;
-       }
-
-       set
-       {
-           _scriptureText = value;
-       }
-   }
    
     
     public void WriteToFile()
@@ -132,7 +66,7 @@ public class SaveAndLoadScripture
             // so I have to use something that will not affect the code later
             using (writer)
             {
-                writer.WriteLine($"{_book};{_chapter};{_endVerse};{_endVerse};{_scriptureText}");
+                writer.WriteLine($"{_book}|{_chapter}|{_endVerse}|{_endVerse}|{_scriptureText}");
             }
         }
 
@@ -140,39 +74,11 @@ public class SaveAndLoadScripture
         {
             using (writer)
             {
-                writer.WriteLine("Book;Chapter;Start Verse;End Verse;Scripture");
-                writer.WriteLine($"{_book};{_chapter};{_endVerse};{_endVerse};{_scriptureText}");
+                writer.WriteLine("Book|Chapter|Start Verse|End Verse;Scripture");
+                writer.WriteLine($"{_book}|{_chapter}|{_endVerse}|{_endVerse}|{_scriptureText}");
             }
         }
     }
-
-    public void LoadFromFile()
-    {
-        string[] lines = File.ReadAllLines(_filePath);
-
-        // Reminder: in each loop, a reference and scripture will be added to the Scripture Library
-        foreach (string line in lines.Skip(1))  // skips the first line which is the header of the csv
-        {
-            string[] parts = line.Split(";");
-            _book = parts[0];
-            _chapter = int.Parse(parts[1]);
-            _startVerse = int.Parse(parts[2]);
-            _endVerse= int.Parse(parts[3]);
-            _scriptureText = parts[4];
-            
-            Reference reference = new Reference(_book, _chapter, _startVerse, _endVerse);
-            Scripture scripture = new Scripture(reference, _scriptureText);
-            
-            
-            // TODO: come back to this later and implement the scripture library tag
-            // Initialize a scripture object
-            //Adds all the scriptures in from the ScriptureData csv to the scripture library list
-            // scriptureLibrary.AddToLibraryList(reference, _scriptureText);
-
-        }
-        
-    }
-
 }
 
 // TODO: create a separate class for handing Loading because of too much fields
