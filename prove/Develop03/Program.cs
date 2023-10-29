@@ -16,7 +16,8 @@ public class Program
         Console.WriteLine();
         
 
-        string userChoice = Console.ReadLine();
+        string userChoice = Console.ReadLine();  //TODO:fix the bug that a user must enter a correct input atleast 2 twice before 
+        //TODO:input is validated
         // validate user input
         do
         {
