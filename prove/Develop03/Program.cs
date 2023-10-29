@@ -17,8 +17,22 @@ public class Program
         
 
         string userChoice = Console.ReadLine();
+        // validate user input
+        do
+        {
+            Console.Clear();
+            Console.WriteLine("Invalid input. Enter 1 or 2 to continue");
+            Console.WriteLine();
+            Console.WriteLine(
+                "What do you want to do?\n1. Add scripture to the Scripture Library\n2. Run the Memorizer Program");
+            userChoice = Console.ReadLine();
+        } while (userChoice != "1" && userChoice != "2");
+
         int parsedUserChoice = int.Parse(userChoice);
-        
+           
+        {
+           
+        }
         // use switch case to handle user choice appropriately
         switch (parsedUserChoice)
         {
