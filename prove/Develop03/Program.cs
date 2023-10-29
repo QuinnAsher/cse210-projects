@@ -85,7 +85,7 @@ public class Program
                 break;
             }
             
-            case 2:
+            case 2:  //TODO: make the program keep running even after the user finishes memorizing the scripture
             {
                 scripture = new Scripture(true);
                 int hiddenCount = 0;
