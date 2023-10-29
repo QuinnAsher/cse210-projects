@@ -93,12 +93,12 @@ public class Reference
         string formattedReference;
         if (_endVerse > 0)
         {
-            formattedReference = $"{_book} {_chapter} - {_startVerse}:{_endVerse}";
+            formattedReference = $"{_book} {_chapter}:{_startVerse}-{_endVerse}";
         }
 
         else
         {
-            formattedReference = $"{_book} {_chapter} - {_startVerse}";
+            formattedReference = $"{_book} {_chapter}:{_startVerse}";
         }
 
         return formattedReference;

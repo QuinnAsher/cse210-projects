@@ -8,7 +8,6 @@ public class Scripture
     private List<Word> _wordsLIst;
     private Reference _reference;
     private bool _useDefault;
-    // private ScriptureLibrary _scriptureLibrary;
     private ScriptureLibraryLoader _libraryLoader;
     Random random = new Random();
     List<int> assignedIndex = new List<int>();
@@ -32,7 +31,6 @@ public class Scripture
      {
          _libraryLoader = new ScriptureLibraryLoader();
          _libraryLoader.LoadScripture();
-         // _libraryLoader.LenOfList();
          Tuple<Reference, string> referenceAndText = _libraryLoader.GetReferenceAndScriptureText();
 
             
@@ -45,24 +43,8 @@ public class Scripture
          }
          _wordsLIst = new List<Word>();
          AddScriptureWords();  // adds all scripture text words to a list of Word objects
-         
-         
      }
-
-    //
-    // public Scripture()
-    // {
-    //     _scriptureLibrary = new ScriptureLibrary();
-    //     Tuple<Reference, string> referenceAndScripture = _scriptureLibrary.ReferenceAndScriptureText();
-    //     _reference = referenceAndScripture.Item1;
-    //     _scriptureText = referenceAndScripture.Item2;
-    //     
-    //     // convert scripture text to a list of words
-    //     _scriptureWordsList = new List<string>(_scriptureText.Split().ToList());
-    //     _wordsLIst = new List<Word>();
-    //     AddScriptureWords();  // adds all scripture words to a list of Word objects
-    //
-    // }
+     
 
     public Scripture(Reference reference, string scriptureText)
     {
@@ -104,30 +86,20 @@ public class Scripture
     {
         int randomIndex;
 
+        if (assignedIndex.Count == _wordsLIst.Count)
+        {
+            assignedIndex.Clear(); // Clear the list if all words have been assigned
+        }
+
         do
         {
             randomIndex = random.Next(_wordsLIst.Count);
         } while (assignedIndex.Contains(randomIndex));
-        
-        // add the random index to the assigned index
+
         assignedIndex.Add(randomIndex);
         return randomIndex;
     }
-
-
-    public string loopContions()
-    {
-        string comparer = "";
-        foreach (string word in _scriptureWordsList)
-        {
-           string w = new string('_', word.Length);
-           comparer += w;
-           comparer += " ";
-        }
-
-        string text = $"{_reference.FormatReference()} {comparer}";
-        return text;
-    }
+    
     
     public void HideWord()
     {
@@ -152,9 +124,6 @@ public class Scripture
     
     private string WordListToSentence()
     {
-        // string renderedText = $"{_reference.FormatReference()} {_scriptureText}";
-        // return renderedText;
-
         string toSentence = "";
         foreach (Word word in _wordsLIst)
         {
@@ -170,8 +139,8 @@ public class Scripture
         return text;
     }
     
-    public void Debugging()
-    {
-            Console.WriteLine(RenderedText());
-    }
+    // public void Debugging()
+    // {
+    //         Console.WriteLine(RenderedText());
+    // }
 }

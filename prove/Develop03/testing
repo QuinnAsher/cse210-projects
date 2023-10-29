@@ -281,3 +281,86 @@ public class ScriptureGenerator
                 _wordsLIst = new List<Word>();
                 AddScriptureWords();  // adds all scripture text words to a list of Word objects
             }
+
+
+
+ int hiddenCount = 0;
+                scripture = new Scripture(true);
+                int wordCount = scripture.LengthOfWordList;  // the len of words in the scripture
+
+
+
+                for (int i = 0; i < wordCount; i++)
+                {
+                    // Console.Clear();
+                    // display the scripture
+                    Console.WriteLine(scripture.RenderedText());
+
+                    Console.WriteLine("Press n to quit or any key to continue");
+                    Console.ReadLine();
+
+                    string exit = Console.ReadLine();
+                    
+                    if (exit == "n")
+                    {
+                        break; // end the lopp
+                        Console.WriteLine("Thank you for using the Scripture Memorizer.");
+                    }
+
+
+                    Random random = new Random();
+                    int hideWordCount = random.Next(1, 3);
+                    for (int x = 0; i < hideWordCount; x++)
+                    {
+                        scripture.HideWord();
+
+                    }
+                    
+                }
+
+
+
+
+
+
+ case 2:
+            {
+                scripture = new Scripture(true);
+                int hiddenCount = 0;
+                ConsoleKeyInfo keyInfo;
+                
+
+                while (hiddenCount < scripture.LengthOfWordList)
+                {
+                    int hidecout = random.Next( 2, 4);
+                    Console.Clear();
+                    Console.WriteLine(scripture.RenderedText());
+                    Console.WriteLine("Press any key to reveal the next word or 'n' to quit.");
+
+                    keyInfo = Console.ReadKey(true);
+
+                    if (keyInfo.KeyChar == 'n')
+                    {
+                        Console.WriteLine("Thank you for using the Scripture Memorizer.");
+                        break;
+                    }
+
+                    for (int j = 0; j < hidecout; j++)
+                    {
+                        scripture.HideWord();
+                        hiddenCount++;
+                    }
+                    
+                }
+
+                if (hiddenCount == scripture.LengthOfWordList)
+                {
+                    Console.Clear();
+                    Console.WriteLine(scripture.RenderedText());
+                    Console.WriteLine("You've successfully memorized the scripture. Congratulations!");
+                    Console.WriteLine(hiddenCount);
+                    Console.WriteLine(scripture.LengthOfWordList);
+                }
+
+                break;
+            }

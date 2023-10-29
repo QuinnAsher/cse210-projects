@@ -9,9 +9,7 @@ public class SaveScriptureToFile
     private int _endVerse;
     private string _scriptureText;
     private bool _fileExit;
-    private Reference _reference;
-    // private ScriptureLibrary scriptureLibrary = new ScriptureLibrary();
-    // private ScriptureLibrary _scriptureLibrary;
+
 
     
    public SaveScriptureToFile()
