@@ -12,6 +12,7 @@ public class ScriptureLibraryLoader
         _filePath = filePath;
         _isExit = File.Exists(_filePath);
         //TODO: make a method that creates a new file and writes a default scripture
+        //TODO: this is a going to catch the file not found error when a user enters a file that does not exit
     }
     
     public void LoadScripture()
