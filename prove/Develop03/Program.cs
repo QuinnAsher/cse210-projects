@@ -13,6 +13,8 @@ public class Program
         Console.WriteLine("Welcome to the Scripture Memorizer Program");
         Console.WriteLine();
         Console.WriteLine("What do you want to do?\n1. Add scripture to the Scripture Library\n2. Run the Memorizer Program");
+        Console.WriteLine();
+        
 
         string userChoice = Console.ReadLine();
         int parsedUserChoice = int.Parse(userChoice);
@@ -80,6 +82,7 @@ public class Program
                 {
                     Console.Clear();
                     Console.WriteLine(scripture.RenderedText());
+                    Console.WriteLine();
                     Console.WriteLine("Press any key to reveal the next word or 'n' to quit.");
 
                     keyInfo = Console.ReadKey(true);
