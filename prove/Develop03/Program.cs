@@ -88,7 +88,7 @@ public class Program
             
             case 2:  //TODO: make the program keep running even after the user finishes memorizing the scripture
             {
-                scripture = new Scripture(true);
+                scripture = new Scripture();
                 int hiddenCount = 0;
                 ConsoleKeyInfo keyInfo;
                 Random random = new Random();
