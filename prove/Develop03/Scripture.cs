@@ -8,30 +8,15 @@ public class Scripture
     private List<Word> _wordsLIst;
     private Reference _reference;
     // private bool _useDefault;
-    private ScriptureLibraryLoader _libraryLoader;
-    private Random random = new Random();
-    private List<int> assignedIndex = new List<int>();
+    // learnt something about readonly. The fields below don't require modifications
+    readonly Random _random = new Random();
+    readonly List<int> _assignedIndex = new List<int>();
     
-    
-    // class constructors
-     // public Scripture()
-     // {
-     //     _reference = new Reference();  // default reference
-     //     _scriptureText =  "For God so loved the world, that he gave his only begotten Son, " +
-     //                   "that whosoever believeth in him should not perish, but have everlasting life.";
-     //     
-     //     // convert scripture text to a list of words
-     //     _scriptureWordsList = new List<string>(_scriptureText.Split().ToList());
-     //     _wordsLIst = new List<Word>();
-     //     AddScriptureWords();  // adds all scripture text words to a list of Word objects
-     // }
-
-
      public Scripture()
      {
-         _libraryLoader = new ScriptureLibraryLoader();
-         _libraryLoader.LoadScripture();
-         Tuple<Reference, string> referenceAndText = _libraryLoader.GetReferenceAndScriptureText();
+        ScriptureLibraryLoader libraryLoader = new ScriptureLibraryLoader();
+         libraryLoader.LoadScripture();
+         Tuple<Reference, string> referenceAndText = libraryLoader.GetReferenceAndScriptureText();
 
             
          if (referenceAndText != null)
@@ -86,17 +71,17 @@ public class Scripture
     {
         int randomIndex;
 
-        if (assignedIndex.Count == _wordsLIst.Count)
+        if (_assignedIndex.Count == _wordsLIst.Count)
         {
-            assignedIndex.Clear(); // Clear the list if all words have been assigned
+            _assignedIndex.Clear(); // Clear the list if all words have been assigned
         }
 
         do
         {
-            randomIndex = random.Next(_wordsLIst.Count);
-        } while (assignedIndex.Contains(randomIndex));
+            randomIndex = _random.Next(_wordsLIst.Count);
+        } while (_assignedIndex.Contains(randomIndex));
 
-        assignedIndex.Add(randomIndex);
+        _assignedIndex.Add(randomIndex);
         return randomIndex;
     }
     
@@ -138,9 +123,4 @@ public class Scripture
         string text = $"{_reference.FormatReference()} {WordListToSentence()}";
         return text;
     }
-    
-    // public void Debugging()
-    // {
-    //         Console.WriteLine(RenderedText());
-    // }
 }

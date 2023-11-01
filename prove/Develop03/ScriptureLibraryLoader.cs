@@ -48,7 +48,6 @@ public class ScriptureLibraryLoader
         catch (Exception e)
         {
             Console.WriteLine(e);
-            throw;
         }
     }
 

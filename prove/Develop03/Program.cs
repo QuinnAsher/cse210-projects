@@ -66,14 +66,14 @@ public class Program
                         else
                         {
                             Console.WriteLine("Invalid input. Please provide book, chapter, start verse, end verse, and text separated by commas.");
-                            continue;
+                            continue;  // TODO; find the reason why the continue statement 
                         }
                         
                         // end the loop based on the input of the user
                         Console.WriteLine("Enter any key to continue adding scripture, or 'n' to go to the main menu");
-                        Console.Clear();
+                        // Console.Clear();
                         
-                        ConsoleKeyInfo keyInfo = Console.ReadKey();  // reads the console key in a secured way
+                        ConsoleKeyInfo keyInfo = Console.ReadKey();
                         if (keyInfo.KeyChar == 'n')
                         {
                             break;
@@ -84,6 +84,7 @@ public class Program
 
                 case 2:
                 {
+                    //TODO: fix the bug that does not allow the user to end the program while the scripture memorizer is still running
                     bool shouldContinue = true;  // game flag to determine when to end the program
                     while (shouldContinue)  
                     {
@@ -105,7 +106,7 @@ public class Program
                             if (keyInfo.KeyChar == 'n')
                             {
                                 Console.WriteLine("Thank you for using the Scripture Memorizer Program! See you soon.");
-                                shouldContinue = true;  // ends the outer while loop
+                                // shouldContinue = true;  // ends the outer while loop
                                 break;
                             }
 
@@ -122,8 +123,8 @@ public class Program
                                 Console.WriteLine(scripture.RenderedText());
                                 Console.WriteLine("You have successfully completed a session. Enter n to quit or any key" +
                                                   "to run another session");
-                                keyInfo = Console.ReadKey(true);
-                                if (keyInfo.KeyChar == 'n')
+                                ConsoleKeyInfo key = Console.ReadKey();
+                                if (key.KeyChar == 'n')
                                 {
                                     shouldContinue = false;
                                     Console.WriteLine("See you soon");
