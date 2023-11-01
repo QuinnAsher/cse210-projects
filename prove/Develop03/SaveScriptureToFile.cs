@@ -14,7 +14,7 @@ public class SaveScriptureToFile
     
    public SaveScriptureToFile()
    {
-       _filePath = "scriptureData";
+       _filePath = "scriptureData.csv";
         _book = "John";
         _chapter = 3;
         _startVerse = 16;
@@ -34,7 +34,7 @@ public class SaveScriptureToFile
    }
    
    
-   public SaveScriptureToFile(string book, int chapter, int startVerse, int endVerse, string scriptureText ,string filePath="scriptureData")
+   public SaveScriptureToFile(string book, int chapter, int startVerse, int endVerse, string scriptureText ,string filePath=@"scriptureData.csv")
    {
        _book = book;
        _chapter = chapter;

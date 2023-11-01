@@ -7,27 +7,27 @@ public class Scripture
     private List<string> _scriptureWordsList;
     private List<Word> _wordsLIst;
     private Reference _reference;
-    private bool _useDefault;
+    // private bool _useDefault;
     private ScriptureLibraryLoader _libraryLoader;
     private Random random = new Random();
     private List<int> assignedIndex = new List<int>();
     
     
     // class constructors
+     // public Scripture()
+     // {
+     //     _reference = new Reference();  // default reference
+     //     _scriptureText =  "For God so loved the world, that he gave his only begotten Son, " +
+     //                   "that whosoever believeth in him should not perish, but have everlasting life.";
+     //     
+     //     // convert scripture text to a list of words
+     //     _scriptureWordsList = new List<string>(_scriptureText.Split().ToList());
+     //     _wordsLIst = new List<Word>();
+     //     AddScriptureWords();  // adds all scripture text words to a list of Word objects
+     // }
+
+
      public Scripture()
-     {
-         _reference = new Reference();  // default reference
-         _scriptureText =  "For God so loved the world, that he gave his only begotten Son, " +
-                       "that whosoever believeth in him should not perish, but have everlasting life.";
-         
-         // convert scripture text to a list of words
-         _scriptureWordsList = new List<string>(_scriptureText.Split().ToList());
-         _wordsLIst = new List<Word>();
-         AddScriptureWords();  // adds all scripture text words to a list of Word objects
-     }
-
-
-     public Scripture(bool useDefault)
      {
          _libraryLoader = new ScriptureLibraryLoader();
          _libraryLoader.LoadScripture();

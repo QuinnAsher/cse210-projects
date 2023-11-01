@@ -45,7 +45,7 @@ public class PromptGenerator
         do
         {
             promptIndex = _random.Next(promptListLen);
-        } while (_assignedIndex.Contains(promptIndex));  // loop runs as long as promptIndex is in assinedIndex
+        } while (_assignedIndex.Contains(promptIndex));  // loop runs as long as promptIndex is in assignedIndex
         
         // assign the unassigned promptIndex to the hashset
         _assignedIndex.Add(promptIndex);

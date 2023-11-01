@@ -6,7 +6,7 @@ public class ScriptureLibraryLoader
     private bool _isExit;
     private Dictionary<Reference, string> _scriptureDict;
 
-    public ScriptureLibraryLoader(string filePath = "scriptureData.csv")
+    public ScriptureLibraryLoader(string filePath = @"scriptureData.csv")
     {
         _scriptureDict = new Dictionary<Reference, string>();
         _filePath = filePath;
