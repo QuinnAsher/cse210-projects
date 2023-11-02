@@ -94,8 +94,9 @@ public class Program
                         {
                             Console.Clear();
                             Console.WriteLine(scripture.RenderedText());
+                            Console.WriteLine();
                             Console.WriteLine("Press Enter to continue hiding the next word or 'n' to quit");
-        
+                            
                             ConsoleKeyInfo keyInfo = Console.ReadKey(true);
 
                             if (keyInfo.KeyChar == 'n')
@@ -141,6 +142,7 @@ public class Program
                                     else
                                     {
                                         Console.Clear();
+                                        Console.WriteLine();
                                         Console.WriteLine("Invalid input. Press Enter to continue or 'n' to quit");
                                     }
                                 }
