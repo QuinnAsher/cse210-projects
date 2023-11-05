@@ -5,7 +5,9 @@ public class Activity
     private string _activiyName;
     private string _activityDescription;
     private int _activityDuration;
-    List<int> _assignedIndex = new List<int>();  // this list will only store unique index in a session
+    private List<int> _assignedIndex1 = new List<int>();  // This list will store unique indices for one type of data.
+    private List<int> _assignedIndex2 = new List<int>();  // This list will store unique indices for another type of data.
+
 
 
 
@@ -17,7 +19,7 @@ public class Activity
     }
 
 
-    public Activity()
+    protected Activity()
     {
         
     }
@@ -73,29 +75,51 @@ public class Activity
 
     protected int CalculateRunCycle()
     {
-        int breathInAndOutDuration = _activityDuration / 5;  // Calculate the duration for one breath in and out
+        // TODO: find a way to round this number to the nearest integer
+        int breathInAndOutDuration = _activityDuration / 5;  // Calculate the duration for one breathe in and out
         int totalCycles = breathInAndOutDuration / 2; // Calculate the total cycles needed
         return totalCycles;
     }
 
-    public int UniqueIndex(List<string> iterable)
+    protected int UniqueIndex(List<string> iterable, bool forType1)
     {
-        Random random = new Random();
-        if (_assignedIndex.Count == iterable.Count)
+        if (forType1)
         {
-            _assignedIndex = new List<int>();  // clean slate the assigned index when all index have been assigned in a sessin
+            Random random1 = new Random();
+            if (_assignedIndex1.Count == iterable.Count)
+            {
+                _assignedIndex1 = new List<int>();  // clean slate the assigned index when all index have been assigned in a session
+            }
+
+            int index1;
+            do
+            {
+                index1 = random1.Next(iterable.Count);
+            } while (_assignedIndex1.Contains(index1));
+        
+            // update the assigned index list with the new assigned index
+            _assignedIndex1.Add(index1);
+
+            return index1;
+        }
+        
+        Random random = new Random();
+        if (_assignedIndex2.Count == iterable.Count)
+        {
+            _assignedIndex2 = new List<int>();  // clean slate the assigned index when all index have been assigned in a session
         }
 
         int index;
         do
         {
             index = random.Next(iterable.Count);
-        } while (_assignedIndex.Contains(index));
+        } while (_assignedIndex2.Contains(index));
         
         // update the assigned index list with the new assigned index
-        _assignedIndex.Add(index);
+        _assignedIndex2.Add(index);
 
         return index;
+       
     }
 
 
@@ -146,7 +170,7 @@ public class Activity
 
     public void DisplayEndMsg()
     {   DisplaySpinner();
-        Console.WriteLine("Well done!");
+        Console.WriteLine("Well done!!");
         Console.WriteLine();
         Console.WriteLine($"You have completed another {_activityDuration} seconds of the {_activiyName}");
     }
