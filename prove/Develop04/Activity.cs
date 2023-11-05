@@ -5,6 +5,8 @@ public class Activity
     private string _activiyName;
     private string _activityDescription;
     private int _activityDuration;
+    List<int> _assignedIndex = new List<int>();  // this list will only store unique index in a session
+
 
 
     public Activity(string name, string description, int duration)
@@ -74,6 +76,26 @@ public class Activity
         int breathInAndOutDuration = _activityDuration / 5;  // Calculate the duration for one breath in and out
         int totalCycles = breathInAndOutDuration / 2; // Calculate the total cycles needed
         return totalCycles;
+    }
+
+    public int UniqueIndex(List<string> iterable)
+    {
+        Random random = new Random();
+        if (_assignedIndex.Count == iterable.Count)
+        {
+            _assignedIndex = new List<int>();  // clean slate the assigned index when all index have been assigned in a sessin
+        }
+
+        int index;
+        do
+        {
+            index = random.Next(iterable.Count);
+        } while (_assignedIndex.Contains(index));
+        
+        // update the assigned index list with the new assigned index
+        _assignedIndex.Add(index);
+
+        return index;
     }
 
 
