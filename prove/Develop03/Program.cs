@@ -5,9 +5,6 @@ public class Program
 {
     static void Main(string[] args)
     {
-        ScriptureLibraryLoader libraryLoader;
-        Reference reference;
-        
         Console.WriteLine();
         Console.WriteLine("Welcome to the Scripture Memorizer Program");
         Console.WriteLine();
@@ -52,7 +49,7 @@ public class Program
                         List<string> userInputToList = new List<string>(userInput.Split().ToList());
 
                         if (userInputToList.Count > 4) // Change the condition to check for all required values
-                        {
+                        {   //TODO: fix the bug that does not allow a user to add scripture
                             // extract the data passed in by the user
                             string book = userInputToList[0];
                             int chapter = int.Parse(userInputToList[1]);

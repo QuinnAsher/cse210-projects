@@ -67,6 +67,27 @@ public class Menu : Activity
                          }
                          break;
                      }
+
+                     case ConsoleKey.D2:
+                     {
+                         while (true)
+                         {
+                             Console.Clear();
+                             ReflectiveActivity reflectiveActivity = new ReflectiveActivity();
+                             reflectiveActivity.RunActivity();
+
+                             Console.WriteLine();
+                             Console.Write("Enter any key to continue the Breathing activity or 'n' to go to the main menu: ");
+                             ConsoleKeyInfo endSession = Console.ReadKey(true);
+
+                             if (endSession.KeyChar == 'n')
+                             {
+                                 break;
+                             }
+
+                         }
+                         break;
+                     }
                  }
              
          }

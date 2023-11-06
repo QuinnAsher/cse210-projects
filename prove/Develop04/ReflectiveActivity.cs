@@ -21,7 +21,7 @@ public class ReflectiveActivity : Activity
     public ReflectiveActivity()
     {
         ActivityNameProperty = "Reflection Activity";
-        ActivityDescriptionProperty = "This activity will help you reflect on times in your life when you have shown strength and resilience. This will hlp you " +
+        ActivityDescriptionProperty = "This activity will help you reflect on times in your life when you have shown strength and resilience. This will help you " +
                                       "recognize the power you have and how you can use it in other aspects of your life.";
         ActivityDurationProperty = 40;
         
@@ -74,13 +74,7 @@ public class ReflectiveActivity : Activity
         Console.WriteLine();
         Console.WriteLine("Consider the following prompt:");
         Console.WriteLine();
-
-
-        for (var i = 0; i < 4; i++)
-        {
-            Console.WriteLine(GetPrompt());
-            Console.WriteLine(GetQuestion());
-        }
+        
     }
     
     
