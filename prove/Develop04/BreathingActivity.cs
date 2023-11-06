@@ -20,9 +20,19 @@ public class BreathingActivity : Activity
     
   public void RunActivity()
     {
+        Console.WriteLine();
+        Console.Clear();
+        DisplayStartMsg();
+
+        string durationStr = Console.ReadLine();
+        int durationInt = int.Parse(durationStr);
+
+        ActivityDurationProperty = durationInt;
+        Console.WriteLine();
         Console.WriteLine("Get ready....");
         DisplaySpinner();
         Console.WriteLine();
+        
         for (int i = 0; CalculateRunCycle() > i; i++)
         {
             Console.Write("Breathe in....");
@@ -34,6 +44,8 @@ public class BreathingActivity : Activity
             Console.WriteLine();
             Console.WriteLine();
         }
+        
+        DisplayEndMsg();
     }
  
 }

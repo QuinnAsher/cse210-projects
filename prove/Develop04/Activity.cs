@@ -26,51 +26,22 @@ public class Activity
 
     public string ActivityNameProperty
     {
-        get
-        {
-            return _activiyName;
-        }
-
-        set
-        {
-            _activiyName = value;
-        }
+        get {return _activiyName;}
+        set {_activiyName = value;}
     }
 
     public string ActivityDescriptionProperty
     {
-        get
-        {
-            return _activityDescription;
-        }
+        get { return _activityDescription; }
+        set { _activityDescription = value;}
 
-        set
-        {
-            _activityDescription = value;
-        }
     }
     
     public int ActivityDurationProperty
     {
-        get
-        {
-            return _activityDuration;
-        }
+        get {return _activityDuration;}
+        set {_activityDuration = value;}
 
-        set
-        {
-            _activityDuration = value;
-        }
-    }
-
-
-    public void DisplayStartMsg()
-    {
-        Console.WriteLine($"Welcome to the {_activiyName}");
-        Console.WriteLine();
-        Console.WriteLine(_activityDescription);
-        Console.WriteLine();
-        Console.WriteLine("How long, in seconds, would you like for your session?");
     }
 
     protected int CalculateRunCycle()
@@ -122,7 +93,16 @@ public class Activity
        
     }
 
-
+    public void DisplayStartMsg()
+    {
+        Console.WriteLine($"Welcome to the {_activiyName}");
+        Console.WriteLine();
+        Console.WriteLine(_activityDescription);
+        Console.WriteLine();
+        Console.Write("How long, in seconds, would you like for your session? ");
+    }
+    
+   
     public void DisplaySpinner()
     {
         List<string> animationStrings = new List<string>();

@@ -68,6 +68,7 @@ public class ReflectiveActivity : Activity
     public void RunActivity()
     {
         DisplayStartMsg();
+        Console.WriteLine();
         Console.WriteLine("Get ready...");
         DisplaySpinner();
         Console.WriteLine();

@@ -9,14 +9,18 @@ public class Menu : Activity
 
      public void RunMenu()
      {
-         bool endProgram = false;  // determines when to end the program
+         bool endProgram = false; // determines when to end the program
 
          while (!endProgram)
          {
              Console.Clear();
-             Console.Write("\nMenu options: \n    1. Start Breathing Activity\n    2. Start Reflecting Activity\n    3. " +
-                           "Start Listening Activity\n    4. Quit\nSelect a choice from the Menu: ");
-             
+             Console.WriteLine("Menu options:");
+             Console.WriteLine("    1. Start Breathing Activity");
+             Console.WriteLine("    2. Start Reflecting Activity");
+             Console.WriteLine("    3. Start Listening Activity");
+             Console.WriteLine("    4. Quit");
+             Console.Write("Select a choice from the Menu: ");
+
              ConsoleKey selectedKey;
 
              while (true)
@@ -32,24 +36,39 @@ public class Menu : Activity
                  else
                  {
                      Console.Clear();
-                     Console.WriteLine();
-                     Console.Write("\nInvalid input. Enter a valid option");
-                     Console.Write("\nMenu options: \n    1. Start Breathing Activity\n    2. Start Reflecting Activity\n    3. " +
-                                   "Start Listening Activity\n    4. Quit\nSelect a choice from the Menu: ");
+                     Console.WriteLine("Invalid input. Enter one of the following options: ");
+                     Console.WriteLine("Menu options:");
+                     Console.WriteLine("    1. Start Breathing Activity");
+                     Console.WriteLine("    2. Start Reflecting Activity");
+                     Console.WriteLine("    3. Start Listening Activity");
+                     Console.WriteLine("    4. Quit");
+                     Console.Write("Select a choice from the Menu: ");
                  }
              }
-             
-             // use a switch cast to run the program based on the selected ey
 
-             switch (selectedKey)
-             {
-                 case ConsoleKey.D1:
+             // use a switch cast to run the program based on the selected key
+                 switch (selectedKey)
                  {
-                     BreathingActivity breathingActivity = new BreathingActivity();
-                     
-                     break;
+                     case ConsoleKey.D1:
+                     {
+                         while (true)
+                         {
+                             BreathingActivity breathingActivity = new BreathingActivity();
+                             breathingActivity.RunActivity();
+                             
+                             Console.WriteLine();
+                             Console.Write("Enter any key to continue the Breathing activity or 'n' to go to the main menu: ");
+                             ConsoleKeyInfo endSession = Console.ReadKey(true);
+
+                             if (endSession.KeyChar == 'n')
+                             {
+                                 break;
+                             }
+                         }
+                         break;
+                     }
                  }
-             }
+             
          }
      }
 }
