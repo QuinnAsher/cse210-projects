@@ -10,8 +10,12 @@ class Program
 
 
         BreathingActivity breathing = new BreathingActivity();
-        breathing.RunActivity();
+        // breathing.RunActivity();
+
+        ReflectiveActivity reflectiveActivity = new();
+        // reflectiveActivity.RunActivity();
+
+        Menu menu = new Menu();
+        menu.RunMenu();
     }
-    
-    
 }

@@ -20,7 +20,6 @@ public class BreathingActivity : Activity
     
   public void RunActivity()
     {
-        DisplayStartMsg();
         Console.WriteLine("Get ready....");
         DisplaySpinner();
         Console.WriteLine();
@@ -35,8 +34,6 @@ public class BreathingActivity : Activity
             Console.WriteLine();
             Console.WriteLine();
         }
-        
-        DisplayEndMsg();
     }
  
 }
