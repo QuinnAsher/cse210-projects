@@ -68,7 +68,7 @@ public class ListingActivity : Activity
 
         
         Console.WriteLine("List as many responses you can to the following prompt");
-        GetPrompt();
+        Console.WriteLine(GetPrompt());
         Console.Write("You may begin in:");
         DisplayCountDown();
         Console.WriteLine();
