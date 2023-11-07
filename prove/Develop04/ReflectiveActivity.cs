@@ -4,6 +4,7 @@ public class ReflectiveActivity : Activity
 {
     private List<string> _promptList;
     private List<string> _questions;
+    private Dictionary<string, string> _userAnswer;
 
     public ReflectiveActivity(string name, string description, int duration) :
         base(name, description, duration)
@@ -14,6 +15,7 @@ public class ReflectiveActivity : Activity
 
         _questions = new List<string>();
         _promptList = new List<string>();
+        _userAnswer = new Dictionary<string, string>();
         AddPrompts();
         AddQuestions();
     }
@@ -27,6 +29,7 @@ public class ReflectiveActivity : Activity
         
         _questions = new List<string>();
         _promptList = new List<string>();
+        _userAnswer = new Dictionary<string, string>();
         AddPrompts();
         AddQuestions();
 
@@ -68,13 +71,63 @@ public class ReflectiveActivity : Activity
     public void RunActivity()
     {
         DisplayStartMsg();
+
+        string durationStr = Console.ReadLine();
+        int durationInt = int.Parse(durationStr);
+        ActivityDurationProperty = durationInt;
+        
         Console.WriteLine();
         Console.WriteLine("Get ready...");
         DisplaySpinner();
         Console.WriteLine();
+        Console.Clear();
         Console.WriteLine("Consider the following prompt:");
         Console.WriteLine();
+
+        string userPrompt = GetPrompt();
+        Console.WriteLine(userPrompt);
+        Console.WriteLine();
+
+        while (true)
+        {
+            // Console.Clear();
+            Console.WriteLine("When you have something in mind, press ENTER to continue");
+            ConsoleKeyInfo userAction = Console.ReadKey();
         
+            if (userAction.Key != ConsoleKey.Enter)
+            {
+                // Console.Clear();
+                Console.WriteLine("Invalid input. Press ENTER to continue");
+                userAction = Console.ReadKey();
+            }
+            
+            break;
+        }
+        
+        Console.WriteLine();
+        Console.WriteLine("Now ponder on each of the following questions as they relate to this experience.");
+        Console.Write("You may begin in: ");
+        DisplayCountDown();
+        
+        // clear the screen
+        Console.Clear();
+        Console.WriteLine();
+        
+        // use a for loop to 
+
+        for (int i = 0; i < RunCycle(); i++)
+        {
+            string userQuestion = GetQuestion();
+            Console.Write($"{userQuestion} ");
+            DisplaySpinner();
+            Console.WriteLine();
+            //TODO: add the question and prompt for log information
+            // _userAnswer.Add(userPrompt, userQuestion);
+            // _userAnswer[userPrompt] = userQuestion;
+        }
+       
+        Console.WriteLine();
+        DisplayEndMsg();
     }
     
     

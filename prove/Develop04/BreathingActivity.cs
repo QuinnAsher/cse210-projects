@@ -26,14 +26,14 @@ public class BreathingActivity : Activity
 
         string durationStr = Console.ReadLine();
         int durationInt = int.Parse(durationStr);
-
         ActivityDurationProperty = durationInt;
+        
         Console.WriteLine();
         Console.WriteLine("Get ready....");
         DisplaySpinner();
         Console.WriteLine();
         
-        for (int i = 0; CalculateRunCycle() > i; i++)
+        for (int i = 0; RunCycle(true) > i; i++)
         {
             Console.Write("Breathe in....");
             DisplayCountDown();

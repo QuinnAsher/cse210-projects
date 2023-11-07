@@ -44,12 +44,17 @@ public class Activity
 
     }
 
-    protected int CalculateRunCycle()
+    protected int RunCycle(bool doubleCycle=false )
     {
-        // TODO: find a way to round this number to the nearest integer
-        int breathInAndOutDuration = _activityDuration / 5;  // Calculate the duration for one breathe in and out
-        int totalCycles = breathInAndOutDuration / 2; // Calculate the total cycles needed
-        return totalCycles;
+        int runDuration = _activityDuration / 5;  // Calculate the duration for one breathe in and out
+        if (doubleCycle)
+        {
+            // TODO: find a way to round this number to the nearest integer
+            int totalCycles = runDuration / 2; // Calculate the total cycles needed
+            return totalCycles;
+        }
+
+        return runDuration;
     }
 
     protected int UniqueIndex(List<string> iterable, bool forType1)
@@ -117,7 +122,7 @@ public class Activity
         
         
         DateTime startTime = DateTime.Now;
-        DateTime endTime = startTime.AddSeconds(3);
+        DateTime endTime = startTime.AddSeconds(5);
 
         int index = 0;
         while (DateTime.Now < endTime)

@@ -1,6 +1,6 @@
 ﻿namespace Develop04;
 
-public class ListingActivity
+public class ListingActivity : Activity
 {
     
 }
