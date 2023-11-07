@@ -2,7 +2,7 @@
 
 public class Activity
 {
-    private string _activiyName;
+    private string _activityName;
     private string _activityDescription;
     private int _activityDuration;
     private List<int> _assignedIndex1 = new List<int>();  // This list will store unique indices for one type of data.
@@ -11,9 +11,9 @@ public class Activity
 
 
 
-    public Activity(string name, string description, int duration)
+    protected Activity(string name, string description, int duration)
     {
-        _activiyName = name;
+        _activityName = name;
         _activityDescription = description;
         _activityDuration= duration;
     }
@@ -26,8 +26,8 @@ public class Activity
 
     public string ActivityNameProperty
     {
-        get {return _activiyName;}
-        set {_activiyName = value;}
+        get {return _activityName;}
+        set {_activityName = value;}
     }
 
     public string ActivityDescriptionProperty
@@ -46,11 +46,11 @@ public class Activity
 
     protected int RunCycle(bool doubleCycle=false )
     {
-        int runDuration = _activityDuration / 5;  // Calculate the duration for one breathe in and out
+        int runDuration = _activityDuration / 5;  // Calculate the duration of a cycle 
         if (doubleCycle)
         {
             // TODO: find a way to round this number to the nearest integer
-            int totalCycles = runDuration / 2; // Calculate the total cycles needed
+            int totalCycles = runDuration / 2; // Calculate the duration of a cylce / by 2
             return totalCycles;
         }
 
@@ -98,9 +98,9 @@ public class Activity
        
     }
 
-    public void DisplayStartMsg()
+    protected void DisplayStartMsg()
     {
-        Console.WriteLine($"Welcome to the {_activiyName}");
+        Console.WriteLine($"Welcome to the {_activityName}");
         Console.WriteLine();
         Console.WriteLine(_activityDescription);
         Console.WriteLine();
@@ -108,7 +108,7 @@ public class Activity
     }
     
    
-    public void DisplaySpinner()
+    protected void DisplaySpinner()
     {
         List<string> animationStrings = new List<string>();
         animationStrings.Add("|");
@@ -142,7 +142,7 @@ public class Activity
     }
 
 
-    public void DisplayCountDown()
+    protected void DisplayCountDown()
     {
         for (int i = 5; i > 0; i--)
         {
@@ -153,10 +153,10 @@ public class Activity
     }
 
 
-    public void DisplayEndMsg()
+    protected void DisplayEndMsg()
     {   DisplaySpinner();
         Console.WriteLine("Well done!!");
         Console.WriteLine();
-        Console.WriteLine($"You have completed another {_activityDuration} seconds of the {_activiyName}");
+        Console.WriteLine($"You have completed another {_activityDuration} seconds of the {_activityName}");
     }
 }

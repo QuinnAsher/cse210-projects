@@ -77,7 +77,7 @@ public class Menu : Activity
                              reflectiveActivity.RunActivity();
 
                              Console.WriteLine();
-                             Console.Write("Enter any key to continue the Breathing activity or 'n' to go to the main menu: ");
+                             Console.Write("Enter any key to continue the Reflective activity or 'n' to go to the main menu: ");
                              ConsoleKeyInfo endSession = Console.ReadKey(true);
 
                              if (endSession.KeyChar == 'n')
@@ -88,6 +88,29 @@ public class Menu : Activity
                          }
                          break;
                      }
+
+                     case ConsoleKey.D3:
+                     {
+                         while (true)
+                         {
+                             Console.Clear();
+                             Console.WriteLine();
+                             ListingActivity listingActivity= new ListingActivity();
+                             listingActivity.RunActivity();
+                             
+                             Console.WriteLine();
+                             //TODO; allow the user to end program completely. Do this by using the endProgram Flag
+                             Console.WriteLine("enter any to continue the Listening activity or 'n' to go to the main menu");
+                             ConsoleKeyInfo endSession = Console.ReadKey(true);
+
+                             if (endSession.KeyChar == 'n')
+                             {
+                                 break;
+                             }
+                         }
+
+                     }
+                         break;
                  }
              
          }
