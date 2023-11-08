@@ -128,6 +128,7 @@ public class ReflectiveActivity : Activity
        
         Console.WriteLine();
         DisplayEndMsg();
+        DisplaySpinner();
     }
     
     

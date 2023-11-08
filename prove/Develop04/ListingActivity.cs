@@ -86,7 +86,6 @@ public class ListingActivity : Activity
         Console.WriteLine($"you listed {_userEntries.Count} items");
         Console.WriteLine();
         DisplayEndMsg();
-        DisplaySpinner();
 
     }
 }

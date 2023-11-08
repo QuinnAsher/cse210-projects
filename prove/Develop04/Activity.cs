@@ -154,9 +154,10 @@ public class Activity
 
 
     protected void DisplayEndMsg()
-    {   DisplaySpinner();
+    {
         Console.WriteLine("Well done!!");
         Console.WriteLine();
         Console.WriteLine($"You have completed another {_activityDuration} seconds of the {_activityName}");
+        DisplaySpinner();
     }
 }
