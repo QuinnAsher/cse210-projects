@@ -61,15 +61,9 @@ public class ListingActivity : Activity
         Console.WriteLine();
         Console.Clear();
         
-        for (int i = 0; i < RunCycle(); i ++)
-        {
-            
-        }
-
-        
-        Console.WriteLine("List as many responses you can to the following prompt");
+        Console.WriteLine("List as many responses you can to the following prompt ");
         Console.WriteLine(GetPrompt());
-        Console.Write("You may begin in:");
+        Console.Write("You may begin in: ");
         DisplayCountDown();
         Console.WriteLine();
         
@@ -83,6 +77,16 @@ public class ListingActivity : Activity
             string userResponse = Console.ReadLine();
             _userEntries.Add(userResponse);
         }
+
+        // int attempts = 0;
+        // foreach (string i in _userEntries)
+        // {
+        //     attempts++;
+        // }
+        Console.WriteLine($"you listed {_userEntries.Count} items");
+        Console.WriteLine();
+        DisplayEndMsg();
+        DisplaySpinner();
 
     }
 }

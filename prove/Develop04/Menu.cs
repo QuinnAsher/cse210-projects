@@ -107,11 +107,20 @@ public class Menu : Activity
                              {
                                  break;
                              }
-                         }
-
+                         } break;
                      }
+
+                     case ConsoleKey.D4:
+                     {
+                         Console.Clear();
+                         Console.WriteLine();
+                         Console.WriteLine("Thank you for using the Mindfulness Program! " +
+                                           "See you soon.");
+                         endProgram = true;
                          break;
-                 }
+                     }
+                 }    
+                 
              
          }
      }
