@@ -4,7 +4,7 @@ public class ReflectiveActivity : Activity
 {
     private List<string> _promptList;
     private List<string> _questions;
-    private Dictionary<string, string> _userAnswer;
+    private Dictionary<string, string> _userAnswer;   //TODO: add the log activity
 
     public ReflectiveActivity(string name, string description, int duration) :
         base(name, description, duration)
