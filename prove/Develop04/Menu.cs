@@ -53,6 +53,9 @@ public class Menu : Activity
                      {
                          while (true)
                          {
+                             string name = "divine";
+                             int nameLength = name.Length;
+                             List<string> names = new List<string>();
                              BreathingActivity breathingActivity = new BreathingActivity();
                              breathingActivity.RunActivity();
                              
