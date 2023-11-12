@@ -2,56 +2,97 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Linq;
+using Learning05;
+
 
 class Program
 {
     static void Main(string[] args)
     {
-        // Console.WriteLine("Hello Learning05 World!");
-        Person p1 = new Person();
-        p1._firstName = "Divine";
-        p1._lastName = "Paul";
-        p1._age = 30;
+        List<Shape> shapes = new List<Shape>();
+        
+        shapes.Add(new Square("red", 20));
+        shapes.Add(new Rectangle("green", 30, 15));
+        shapes.Add(new Circle("blue", 12));
 
-        Person p2 = new Person();
-        p2._firstName = "Matthew";
-        p2._lastName = "Onoja";
-        p2._age = 77;
-        
-        
-        List<Person> people = new List<Person>();
+        foreach (Shape shape in shapes)
+        {
+            Console.WriteLine(shape.GetArea());
+            Console.WriteLine(shape.ColorProperty);
+        }
 
-        // add p1 and p2 to the people's list
-        people.Add(p1);
-        people.Add(p2);
-        foreach (Person person in people)
-        {
-            Console.WriteLine(person._age);
-        }
-        
-        //call the save method
-        SaveToFile(people);
-    }
-    
-    // create a method to save a file
-    static void SaveToFile(List<Person> people)
-    {
-        Console.WriteLine("Saving to file...");
-        string filename = "people.txt";
-        using (StreamWriter _outputFile = new StreamWriter(filename))
-        {
-            foreach (Person p in people)
-            {
-                _outputFile.WriteLine(p._age);
-            }
-        }
     }
 }
-
-class Person
-{
-    public string _firstName;
-    public string _lastName;
-    public int _age;
-}
-
+// class Program
+// {
+//     static void Main(string[] args)
+//     {
+//         // create a list of Employees
+//         List<Employee> employees = new List<Employee>(); 
+//         
+//         // create different kinds of employees and add them to the same list
+//         employees.Add(new Employee());
+//         employees.Add(new HourlyEmployee());
+//         
+//         // get a custom calculation for each one
+//         foreach (Employee employee in employees)
+//         {
+//             float pay = employee.CalculatePay();
+//             Console.WriteLine(pay);
+//         }
+//     }
+// }
+//
+//
+// // a parent class
+// public class Employee
+// {
+//     private float salary = 100f;
+//
+//     public virtual float CalculatePay()
+//     {
+//         return salary;
+//     }
+// }
+//
+// // a child class
+// public class HourlyEmployee : Employee
+// {
+//     private float rate = 9f;
+//     private float hours = 100f;
+//
+//     public override float CalculatePay()
+//     {
+//         return rate * hours;
+//     }
+// }
+//
+// // the parent class showing the 'virtual" keyword included
+// public abstract class AbstractEmployee
+// {
+//     private string _employeeName;
+//
+//     public abstract float CalculatePay();
+// }
+//
+// // a child class
+// public class SalaryEmployee : AbstractEmployee
+// {
+//     private float salary = 100f;
+//
+//     public override float CalculatePay()
+//     {
+//         return salary;
+//     }
+// }
+//
+// public class HourlyEmployeee : AbstractEmployee
+// {
+//     private float rate = 9f;
+//     private float hours = 100f;
+//
+//     public override float CalculatePay()
+//     {
+//         return rate * hours;
+//     }
+// }
