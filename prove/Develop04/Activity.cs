@@ -50,7 +50,7 @@ public class Activity
         if (doubleCycle)
         {
             // TODO: find a way to round this number to the nearest integer
-            int totalCycles = runDuration / 2; // Calculate the duration of a cylce / by 2
+            int totalCycles = (int)Math.Ceiling((double)runDuration / 2); // Calculate the duration of a cycle / by 2
             return totalCycles;
         }
 

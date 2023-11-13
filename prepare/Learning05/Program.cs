@@ -1,7 +1,3 @@
-using System;
-using System.IO;
-using System.Collections.Generic;
-using System.Linq;
 using Learning05;
 
 
@@ -17,8 +13,12 @@ class Program
 
         foreach (Shape shape in shapes)
         {
-            Console.WriteLine(shape.GetArea());
-            Console.WriteLine(shape.ColorProperty);
+            // Console.WriteLine(shape.GetArea());
+            // Console.WriteLine(shape.ColorProperty);
+            Console.WriteLine();
+            string color = shape.ColorProperty;
+            double area = shape.GetArea();
+            Console.WriteLine($"The {color} shape has an area of {area}");
         }
 
     }
