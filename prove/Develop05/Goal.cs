@@ -4,14 +4,15 @@ public abstract class Goal
 {
     private string _goalName;
     private string _goalDescription;
+    private int _point;
     private int _basePoint;
 
-    protected Goal(string name, string description)
+    protected Goal(string name, string description, int point)
     {
         _goalName = name;
         _goalDescription = description;
+        _point = point;
         _basePoint = 0;
-
     }
     
 
@@ -33,13 +34,18 @@ public abstract class Goal
         set => _basePoint = value;
     }
 
+    protected int GoalPoint
+    {
+        get => _point;
+        set => _point = value;
+    }
 
-    // public string isCompletMsg()
-    // {
-    //     if (IsComplete()) return $"Congratulation you have earned {_basePoint}";
-    //
-    // }
+    public int GetUserScore()
+    {
+        return _basePoint;
+    }
     public abstract int RecordEvent();
-
+    public abstract string GetStringRepresentation();
+    public abstract string GoalInfo();
     public abstract bool IsComplete();
 }

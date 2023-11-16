@@ -2,25 +2,35 @@
 
 public class SimpleGoal : Goal
 {
-    private int _point;
-    
-    public SimpleGoal(string name, string description, int point) : base(name, description)
+    public SimpleGoal(string name, string description, int point) : base(name, description, point)
     {
         GoalName = name;
         GoalDescription = description;
-        _point = point;
+        GoalPoint = point;
     }
+
+
 
     public override bool IsComplete()
     {
-        return BasePoint >= _point;  // isCompleted should return true when a point has been earned
+        return BasePoint == GoalPoint;  // isCompleted should return true when a point has been earned
     }
 
     public override int RecordEvent()
     {
-        // This method will add a point to the based point and make 
-        // the IsComplete Method return true
-        BasePoint += _point;
+        BasePoint += GoalPoint;
         return BasePoint;
+    }
+
+    public override string GoalInfo()
+    {
+        if(IsComplete()) return $"[X] {GoalName} ({GoalDescription})";
+
+        return $"[ ] {GoalName} ({GoalDescription})";
+    }
+    
+    public override string GetStringRepresentation()
+    {
+        return $"SimpleGoal:{GoalName}|{GoalDescription}|{GoalPoint}|{IsComplete()}";
     }
 }

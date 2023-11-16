@@ -7,7 +7,7 @@ public class CheckListGoal : Goal
     private int _bonus;
     
     
-    public CheckListGoal(string name, string description, int point, int targetCount, int bonus) : base(name, description)
+    public CheckListGoal(string name, string description, int point, int bonus, int targetCount) : base(name, description, point)
     {
         GoalName = name;
         GoalDescription = description;
@@ -16,8 +16,7 @@ public class CheckListGoal : Goal
         _currentCount = 0;
         _targetCount = targetCount;
     }
-
-
+    
     public override bool IsComplete()
     {
         // when the target count is equal to the current count the 
@@ -36,5 +35,20 @@ public class CheckListGoal : Goal
         }
 
         return BasePoint;
+    }
+
+  
+    public override string GoalInfo()
+    {
+        if(IsComplete()) return $"[X] {GoalName} ({GoalDescription})";
+
+        return $"[ ] {GoalName} ({GoalDescription}) --- Currently " +
+               $"Completed: {_currentCount}/{_targetCount}";
+
+    }
+
+    public override string GetStringRepresentation()
+    {
+        return $"CheckListGoal:{GoalName}|{GoalDescription}|{BasePoint}|{_bonus}|{_targetCount}|{_currentCount}";
     }
 }
