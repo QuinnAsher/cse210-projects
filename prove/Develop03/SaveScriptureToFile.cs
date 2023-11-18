@@ -9,32 +9,9 @@ public class SaveScriptureToFile
     private int _endVerse;
     private string _scriptureText;
     private bool _fileExit;
-
-
     
-   public SaveScriptureToFile()
-   {
-       _filePath = "scriptureData.csv";
-        _book = "John";
-        _chapter = 3;
-        _startVerse = 16;
-        _endVerse = 0;
-        _scriptureText =
-            "For God so loved the world, that he gave his only begotten Son, " +
-            "that whosoever believeth  testingin him should not perish, but have everlasting life.";
-        
-        // check for valid extension
-        if (Path.HasExtension(_filePath) && Path.GetExtension(_filePath) != ".csv" || !Path.HasExtension(_filePath))
-        {
-            _filePath = Path.ChangeExtension(_filePath, ".csv");
-        }
-        
-        _fileExit = File.Exists(_filePath);  // checks whether a file exit
-
-   }
    
-   
-   public SaveScriptureToFile(string book, int chapter, int startVerse, int endVerse, string scriptureText ,string filePath=@"scriptureData.csv")
+   public SaveScriptureToFile(string book, int chapter, int startVerse, int endVerse, string scriptureText ,string filePath="scriptureData.csv")
    {
        _book = book;
        _chapter = chapter;
@@ -60,7 +37,7 @@ public class SaveScriptureToFile
         StreamWriter writer = new StreamWriter(_filePath, true);
         if (_fileExit)  // file exits so just append to the file
         {
-            // a colon is used as separator for the csv because the scripture text haas space and commas
+            // a | is used as separator for the csv because the scripture text haas space and commas
             // so I have to use something that will not affect the code later
             using (writer)
             {

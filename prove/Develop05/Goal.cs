@@ -52,7 +52,7 @@ public abstract class Goal
     
     public  void RecordEventMsg()
     {
-        Console.WriteLine($"Congratulations! You have earned {BasePoint} points from {_goalName}");
+        Console.WriteLine($"Congratulations! You have earned {_basePoint} points from Goal: '{_goalName}'");
     }
     
     public abstract int RecordEvent();
