@@ -1,6 +1,6 @@
 ﻿// namespace Develop05;
 //
-// public class StopABadHabit : Goal
+// public class HabitTracker : Goal
 // {
 //     
 // }
@@ -37,6 +37,3 @@
 
 // TODO: Test thoroughly in various scenarios.
 // - Conduct comprehensive testing to ensure the class functions correctly in different situations.
-
-// TODO: Consider future extension for handling various habit types.
-// - Design the class to be extensible for handling different types of habits in the future.
