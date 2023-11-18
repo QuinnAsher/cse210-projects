@@ -255,7 +255,7 @@ public class Menu
 
                else
                {
-                  goalManager.InvokeGoalEvent(goalIndex);
+                  goalManager.RecordGoalEvent(goalIndex);
                   goalToRecord.RecordEventMsg();
                   Console.WriteLine($"You now have {goalManager.UserScore()} points.");
                }
@@ -292,11 +292,9 @@ public class Menu
                
                Console.Clear();
                goalManager.RemoveGoal(goalIndex);
-               goalManager.RemoveGoalMsg(goalIndex);
                Console.WriteLine();
                Console.WriteLine("Goals left: ");
                goalManager.DisplayGoal();
-               // goalManager.SaveGoalToFile();
                break;
             }
             
@@ -304,7 +302,7 @@ public class Menu
             {
                Console.Clear();
                Console.WriteLine("\nThank you for using the Eternal Quest Program. See you soon!");
-               endProgram = true;  // Move this line inside the case
+               endProgram = true;
                break;
             }
          }
