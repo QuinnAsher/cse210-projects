@@ -59,40 +59,43 @@ public class GoalManager
     }
 
 
-    public void InvokeGoalEvent(int goalIndex)
+    public void RecordGoalEvent(int goalIndex)
     {
         GoalToRecord(goalIndex).RecordEvent();
     }
-
+    
     public Goal GoalToRecord(int goalIndex)
     {
+        // This method retrieves the goal at the specified index for checking in.
+        // The returned goal will be used to determine if it has already been completed,
+        // preventing the check-in of goals that are already marked as complete.
+
+        // Adjusting the index to match the zero-based index used in the list
         Goal goalToRecord = _goalList[goalIndex - 1];
+
         return goalToRecord;
     }
 
 
+
     public void RemoveGoal(int goalIndex)
     {
-        _goalList.RemoveAt(goalIndex - 1);
-    }
-
-    public void RemoveGoalMsg(int goalIndex)
-    {
         Goal removedGoal = _goalList[goalIndex - 1];
-        ;
+        _goalList.Remove(removedGoal);
+
         if (removedGoal is SimpleGoal)
         {
-            Console.WriteLine($"You have successfully removed a Simple Goal: {removedGoal.GetGoalName()}");
+            Console.WriteLine($"You have successfully removed a Simple Goal: '{removedGoal.GetGoalName()}'");
         }
-        
+
         else if (removedGoal is CheckListGoal)
         {
-            Console.WriteLine($"You have successfully removed a Checklist Goal: {removedGoal.GetGoalName()}");
+            Console.WriteLine($"You have successfully removed a Checklist Goal: '{removedGoal.GetGoalName()}'");
         }
-        
-        else if(removedGoal is EternalGoal)
+
+        else if (removedGoal is EternalGoal)
         {
-            Console.WriteLine($"You have successfully removed an Eternal Goal: {removedGoal.GetGoalName()}");
+            Console.WriteLine($"You have successfully removed an Eternal Goal: '{removedGoal.GetGoalName()}'");
         }
     }
     
