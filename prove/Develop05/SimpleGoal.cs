@@ -18,7 +18,11 @@ public class SimpleGoal : Goal
 
     public override int RecordEvent()
     {
-        BasePoint += GoalPoint;
+        if (!IsComplete())
+        {
+            BasePoint += GoalPoint;
+        }
+
         return BasePoint;
     }
 

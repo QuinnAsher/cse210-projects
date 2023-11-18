@@ -2,7 +2,7 @@
 
 public class CheckListGoal : Goal
 {
-    private int _currentCount;  //
+    private int _currentCount;
     private int _targetCount;
     private int _bonus;
     
@@ -26,17 +26,29 @@ public class CheckListGoal : Goal
 
     public override int RecordEvent()
     {
-        BasePoint += GoalPoint;
-        _currentCount++;
-
-        if (_currentCount == _targetCount)
+        if (!IsComplete())
         {
-            BasePoint += _bonus;
+            BasePoint += GoalPoint;
+            _currentCount++;
         }
+        
 
+        if (IsComplete() && BasePoint < _bonus || BasePoint > _bonus) 
+        {
+            // Ensure that the bonus is added only when the goal is complete (IsComplete() == true)
+            // and the BasePoint is below the specified bonus value (_bonus).
+            // This prevents additional bonus points from being added when the goal is already completed.
+            BasePoint += _bonus;
+            
+            // The '_bonus' is synchronized with 'BasePoint' to ensure the correctness of the following logic:
+            // When checking if 'BasePoint' is greater than '_bonus', this update guarantees that the condition becomes false,
+            // preventing adding '_bonus' when the Goal has been completed.
+            _bonus = BasePoint;
+
+        }
+        
         return BasePoint;
     }
-
   
     public override string GoalInfo()
     {
@@ -49,6 +61,6 @@ public class CheckListGoal : Goal
 
     public override string GetStringRepresentation()
     {
-        return $"CheckListGoal:{GoalName}|{GoalDescription}|{BasePoint}|{_bonus}|{_targetCount}|{_currentCount}";
+        return $"CheckListGoal:{GoalName}|{GoalDescription}|{GoalPoint}|{_bonus}|{_currentCount}|{_targetCount}";
     }
 }

@@ -44,6 +44,17 @@ public abstract class Goal
     {
         return _basePoint;
     }
+
+    public string GetGoalName()
+    {
+        return _goalName;
+    }
+    
+    public  void RecordEventMsg()
+    {
+        Console.WriteLine($"Congratulations! You have earned {BasePoint} points from {_goalName}");
+    }
+    
     public abstract int RecordEvent();
     public abstract string GetStringRepresentation();
     public abstract string GoalInfo();
