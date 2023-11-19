@@ -167,9 +167,9 @@ public class GoalManager
     
     private bool IsContainGoal(Goal goal)
     {
-        // This method checks if a goal with the same UniqueId already exists in the '_goalList'.
+        // This method checks if a goal object with the same UniqueId already exists in the '_goalList'.
         // This is important when loading goals from a file to avoid adding duplicates.
-        // It ensures that only unique goals are included in the list.
+        // It ensures that only unique goals objects are included in the list.
         foreach (Goal g in _goalList)
         {
             if(g.UniqueId == goal.UniqueId)
