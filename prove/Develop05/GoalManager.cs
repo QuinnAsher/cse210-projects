@@ -144,25 +144,19 @@ public class GoalManager
             string goalType = parts[0];
             string goalInfo = parts[1];
             
-            // we can use the _goalList to store the loaded objects because when the load
-            //method will be called, the _goalList will be empty so there will be no
-            //duplicate goals arising from appending goals objects, except if a user load the same file more
-            // than once in a session. //TODO: find a better way to solve the problem if the user loads a file more than once.
-            // a solution is to create a new goalList, but this will mean that I'll have to manage two goalList
-            //TODO: find a solution for duplicate goals.
-            // -When a user loads from a file twice, goals will be appended, resulting to duplicate goals 
-            
+            // Instead of creating a new list to store goals when loading from a file,
+            // I utilize the existing '_goalList'. This decision is driven by the desire to maintain a
+            // single source of data for goals, avoiding the complexity of managing multiple lists.
+
+
+            // Note: When the load method is called, '_goalList' is initially empty, preventing duplicate goals.
+            // However, in a scenario where the same file is loaded more than once in a session,
+            // duplicate goals could arise. The implementation has been updated to address this issue,
+            // ensuring that duplicate goals are now appropriately handled.
             Goal goal = CreateGoal(goalType, goalInfo);
 
-            if (_goalList.Count > 0)
-            {
-                if (!IsContainGoal(goal))
-                {
-                    _goalList.Add(goal);
-                }
-            }
-
-            else
+            // Check if a goal with the same UniqueId already exists
+            if (!IsContainGoal(goal))
             {
                 _goalList.Add(goal);
             }
@@ -173,6 +167,9 @@ public class GoalManager
     
     private bool IsContainGoal(Goal goal)
     {
+        // This method checks if a goal with the same UniqueId already exists in the '_goalList'.
+        // This is important when loading goals from a file to avoid adding duplicates.
+        // It ensures that only unique goals are included in the list.
         foreach (Goal g in _goalList)
         {
             if(g.UniqueId == goal.UniqueId)
@@ -197,6 +194,7 @@ public class GoalManager
                 int point = int.Parse(parts[2]);
                 bool isCompleted = bool.Parse(parts[3]);
                 string uniqueId = parts[4];
+                
                 Goal simpleGoal = new SimpleGoal(name, description, point);
                 
                 // set the unique Id
