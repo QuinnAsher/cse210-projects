@@ -149,12 +149,40 @@ public class GoalManager
             //duplicate goals arising from appending goals objects, except if a user load the same file more
             // than once in a session. //TODO: find a better way to solve the problem if the user loads a file more than once.
             // a solution is to create a new goalList, but this will mean that I'll have to manage two goalList
+            //TODO: find a solution for duplicate goals.
+            // -When a user loads from a file twice, goals will be appended, resulting to duplicate goals 
+            
             Goal goal = CreateGoal(goalType, goalInfo);
-            _goalList.Add(goal);
 
+            if (_goalList.Count > 0)
+            {
+                if (!IsContainGoal(goal))
+                {
+                    _goalList.Add(goal);
+                }
+            }
+
+            else
+            {
+                _goalList.Add(goal);
+            }
         }
     }
-
+    
+    
+    
+    private bool IsContainGoal(Goal goal)
+    {
+        foreach (Goal g in _goalList)
+        {
+            if(g.UniqueId == goal.UniqueId)
+            {
+                // Console.WriteLine($"for GUID debugging: {g.UniqueId}");
+                return true;
+            }
+        }
+        return false;
+    }
     
     private Goal CreateGoal(string goalType, string goalInfo)
     {
@@ -168,7 +196,11 @@ public class GoalManager
                 string description = parts[1];
                 int point = int.Parse(parts[2]);
                 bool isCompleted = bool.Parse(parts[3]);
+                string uniqueId = parts[4];
                 Goal simpleGoal = new SimpleGoal(name, description, point);
+                
+                // set the unique Id
+                simpleGoal.UniqueId = uniqueId;
                 
                 // record an event if isCompleted is true. This will automatically
                 // add the corresponding point
@@ -188,10 +220,13 @@ public class GoalManager
                 string description = parts[1];
                 int point = int.Parse(parts[2]);
                 int bonus = int.Parse(parts[3]);
-                int targetCount = int.Parse(parts[5]);
                 int currentCount = int.Parse(parts[4]);
+                int targetCount = int.Parse(parts[5]);
+                string uniqueId = parts[6];
 
                 Goal checkListGoal = new CheckListGoal(name, description, point, bonus, targetCount);
+                checkListGoal.UniqueId = uniqueId;
+                
                 for (int i = 0; i < currentCount; i++)
                 {
                     checkListGoal.RecordEvent();
@@ -208,8 +243,10 @@ public class GoalManager
                 string description = parts[1];
                 int point = int.Parse(parts[2]);
                 int basePoint = int.Parse(parts[3]);
+                string uniqueId = parts[4];
 
                 Goal eternalGoal = new EternalGoal(name, description, point);
+                eternalGoal.UniqueId = uniqueId;
                 
                 for (int i = 0; i < basePoint / point; i++)
                 {
