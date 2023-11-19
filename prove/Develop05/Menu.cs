@@ -88,8 +88,8 @@ public class Menu
                      int goalPoint = int.Parse(Console.ReadLine());
                      
                      // create a simple goal
-                     Goal simpleGoal = new SimpleGoal(goalName, goalDescription, goalPoint);
-                     goalManager.AddGoals(simpleGoal);
+                     // Goal simpleGoal = new SimpleGoal(goalName, goalDescription, goalPoint);
+                     goalManager.AddGoals(new SimpleGoal(goalName, goalDescription, goalPoint));
                      break;
                   }
 
@@ -105,8 +105,8 @@ public class Menu
                      Console.Write("How many points do you want associated with this goal? ");
                      int goalPoint = int.Parse(Console.ReadLine());
                      
-                     Goal simpleGoal = new EternalGoal(goalName, goalDescription, goalPoint);
-                     goalManager.AddGoals(simpleGoal);
+                     // Goal simpleGoal = new EternalGoal(goalName, goalDescription, goalPoint);
+                     goalManager.AddGoals( new EternalGoal(goalName, goalDescription, goalPoint));
                      break;
                   }
 
@@ -128,8 +128,8 @@ public class Menu
                      Console.Write("What is the bonus for accomplishing it that many times? ");
                      int bonus = int.Parse(Console.ReadLine());
                      
-                     Goal checkListGoal = new CheckListGoal(goalName, goalDescription, goalPoint, bonus, targetCount);
-                     goalManager.AddGoals(checkListGoal);
+                     // Goal checkListGoal = new CheckListGoal(goalName, goalDescription, goalPoint, bonus, targetCount);
+                     goalManager.AddGoals(new CheckListGoal(goalName, goalDescription, goalPoint, bonus, targetCount));
                      break;
                   }
                }
