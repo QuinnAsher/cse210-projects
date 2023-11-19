@@ -1,4 +1,6 @@
-﻿namespace Develop05;
+﻿using System.Xml;
+
+namespace Develop05;
 
 public class SimpleGoal : Goal
 {
@@ -35,6 +37,6 @@ public class SimpleGoal : Goal
     
     public override string GetStringRepresentation()
     {
-        return $"SimpleGoal:{GoalName}|{GoalDescription}|{GoalPoint}|{IsComplete()}";
+        return $"SimpleGoal:{GoalName}|{GoalDescription}|{GoalPoint}|{IsComplete()}|{_uniqueId}";
     }
 }

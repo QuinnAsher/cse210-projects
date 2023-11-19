@@ -6,6 +6,7 @@ public abstract class Goal
     private string _goalDescription;
     private int _point;
     private int _basePoint;
+    protected string _uniqueId;
 
     protected Goal(string name, string description, int point)
     {
@@ -13,9 +14,16 @@ public abstract class Goal
         _goalDescription = description;
         _point = point;
         _basePoint = 0;
+        _uniqueId = Guid.NewGuid().ToString();
+    }
+
+
+    public string UniqueId
+    {
+        get => _uniqueId;
+        set => _uniqueId = value;
     }
     
-
     protected string GoalName
     {
         get => _goalName;
