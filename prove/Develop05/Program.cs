@@ -6,8 +6,9 @@ class Program
     {
         Menu menu = new Menu();
         menu.RunProgram();
-
-        // Goal checkListGoal = new CheckListGoal("Visit the Temple", "I want to visit the temple 3 times this year", 1000,
+        
+        // The commented out code is for debugging and testing
+        // Goal checkListGoal = new CheckListGoal("Visit the Temple", "I want to visit the temple 3 times this year", 20,
         //     1000, 3);
         //
         // checkListGoal.RecordEvent();
@@ -15,7 +16,7 @@ class Program
         // checkListGoal.RecordEvent();
         // checkListGoal.RecordEvent();
         // checkListGoal.RecordEvent();
-
+        //
         // GoalManager goalManager = new GoalManager();
         // goalManager.AddGoals(checkListGoal);
         // Console.WriteLine(goalManager.UserScore());
