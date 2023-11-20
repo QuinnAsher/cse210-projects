@@ -30,15 +30,18 @@ public class CheckListGoal : Goal
         {
             BasePoint += GoalPoint;
             _currentCount++;
+
+            // return BasePoint;
         }
         
 
-        if (IsComplete() && BasePoint < _bonus || BasePoint > _bonus) 
+        if (IsComplete() && BasePoint < _bonus || IsComplete() && BasePoint > _bonus) 
         {
             // Ensure that the bonus is added only when the goal is complete (IsComplete() == true)
             // and the BasePoint is below the specified bonus value (_bonus).
             // This prevents additional bonus points from being added when the goal is already completed.
             BasePoint += _bonus;
+            // Console.WriteLine($"Total Point is: {BasePoint}");
             
             // The '_bonus' is synchronized with 'BasePoint' to ensure the correctness of the following logic:
             // When checking if 'BasePoint' is greater than '_bonus', this update guarantees that the condition becomes false,
