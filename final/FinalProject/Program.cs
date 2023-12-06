@@ -1,33 +1,35 @@
-using System; // Add this line for System.Linq
-using ConsoleTables;
-using FinalProject;
+namespace FinalProject;
 
-class Something { }  // You might need a class definition for Something
-
-class Program
+internal class Something
 {
-    static void Main(string[] args)
-    {
-        // var table = new ConsoleTable("one", "two", "three");
-        // table.AddRow(1, 2, 3)
-        //     .AddRow("this line should be longer", "yes it is", "oh");
-        //
-        // table.Write();
-        // Console.WriteLine();
-        //
-        // var rows = Enumerable.Repeat(new Something(), 10);
-        //
-        // ConsoleTable
-        //    .From<Something>(rows)
-        //     .Configure(o => o.NumberAlignment = Alignment.Right)
-        //     .Write(Format.Alternative);
-        //
-        // Console.ReadKey();
+} // You might need a class definition for Something
 
-        var passwordHash = new PasswordManager("Chongfilawas");
-        var hashPassword = passwordHash.HashPassword();
-        var hashInputPassword = passwordHash.HashInputPassword("Chongfilawas");
-        Console.WriteLine(hashPassword + " " + hashInputPassword);
-        Console.WriteLine(passwordHash.CompareHashedPassword("Chongfilawas"));
+public class Program
+{
+    private static void Main(string[] args)
+    {
+        Account sender = new CurrentAccount("Divine");
+        Account receiver = new SavingsAccount("John");
+        
+        sender.Deposit(10000);
+        sender.Transfer(receiver, 5000);
+
+        foreach (ITransaction t in receiver.GetTransactionHistory)
+        {
+            Console.WriteLine(t.TransactionAlert());
+            Console.WriteLine(new string('-', 100));
+            
+        }
+        
+        // Console.WriteLine(new string('-', 150));
+        
+        foreach (ITransaction t in sender.GetTransactionHistory)
+        {
+            Console.WriteLine(t.TransactionAlert());
+            Console.WriteLine(new string('-', 100));
+        }
+        
+        ObjectCreator.SaveTransaction(sender,"sender");
+        ObjectCreator.SaveTransaction(receiver, "receiver");
     }
 }

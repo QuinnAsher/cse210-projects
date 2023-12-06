@@ -3,21 +3,12 @@ using System.Text;
 
 namespace FinalProject;
 
-public class PasswordManager
+public static class PasswordManager
 {
-    private string _password;
-
-
-    public PasswordManager(string password)
-    {
-        _password = password;
-    }
-
-
-    public string HashPassword()
+    public static string HashPassword(string password)
     {
         // convert the password to a byte array
-        var passwordBytes = Encoding.UTF8.GetBytes(_password);
+        var passwordBytes = Encoding.UTF8.GetBytes(password);
 
         // create a SHA256 instance
         using var sha256 = SHA256.Create();
@@ -30,24 +21,9 @@ public class PasswordManager
         return hashedPassword;
     }
 
-
-
-    public string HashInputPassword(string inputPassword)
-    {
-        var inPasswordBytes = Encoding.UTF8.GetBytes(inputPassword);
-
-        using var sha256 = SHA256.Create();
-
-        var hashBytes = sha256.ComputeHash(inPasswordBytes);
-
-        var hashedInputPassword = BitConverter.ToString(hashBytes).Replace("-", "");
-        return hashedInputPassword;
-    }
     
-    public bool CompareHashedPassword(string inputPassword)
+    public static bool ComparePassword(string dataBasePassword, string inputPassword)
     {
-        var hashedPassword = HashPassword();
-        var hashedInputPassword = HashInputPassword(inputPassword);
-        return hashedPassword == hashedInputPassword;
+        return dataBasePassword == inputPassword;
     }
 }
