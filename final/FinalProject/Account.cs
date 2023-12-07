@@ -16,7 +16,14 @@ public abstract class Account
         _transactionsHistory = new List<Transaction>();
         _creationDAte = DateTime.Now;
     }
-    
+
+    protected Account(string accountHolder, long accountNumber, decimal accBalance, DateTime creationDAte) : this(accountHolder, accountNumber)
+    {
+        _accountNumber = accountNumber;
+        _accountHolder = accountHolder;
+        _accBalance = accBalance;
+        _creationDAte = creationDAte;
+    }
 
     // Account class properties for getting data
     public decimal GetAccountBalance => _accBalance;

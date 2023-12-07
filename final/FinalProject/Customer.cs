@@ -8,7 +8,10 @@ public class Customer
    private long _accountNumber;
    private string _customerName;
    private string _password;
-   private CustomerDetails _customerDetails;
+   private string _address;
+   private string _emailAddress;
+   private string _phoneNumber;
+   private DateTime _dateOfBirth;
    private List<Account> _accountList;
 
    public Customer(string customerName, string password, CustomerDetails customerDetails)
@@ -17,16 +20,16 @@ public class Customer
       _accountNumber = GenerateAccountNumber();
       _customerName = customerName;
       _password = password;
-      _customerDetails = customerDetails;
       _accountList = new List<Account>();
    }
 
 
 
    public List<Account> GetCustomerAccount => _accountList;
-   public string GetStringRepresentation() =>  $"{_customerId}|{_accountNumber}|{_customerName}|{_password}";
    
-   public void CreateAccount(string accountType)
+   public string GetStringRepresentation() =>  $"{_customerId}|{_accountNumber}|{_customerName}|{HashPassword(_password)}";
+   
+   public void CreateAccount(string accountType )
    {
       switch (accountType)
       {

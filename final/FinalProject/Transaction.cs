@@ -26,7 +26,7 @@ public abstract class Transaction
     public string GetTransactionType => _transactionType;
     public decimal GetTransactionAmount => _amount;
 
-    public string SetTransactionId
+    public string  SetTransactionId
     {
         set => _transactionId = value;
     }

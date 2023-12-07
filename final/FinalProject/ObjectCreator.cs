@@ -45,20 +45,7 @@ public static class ObjectCreator
         }
 
         return;
-
-        // bool IsContainTransaction(Transaction transaction)
-        // {
-        //     foreach (Transaction t in account.GetTransactionHistory)
-        //     {
-        //         if (t.GetTransactionId == transaction.GetTransactionId)
-        //         {
-        //             return true;
-        //         }
-        //     }
-        //
-        //     return false;
-        // }
-
+        
         bool IsContainTransaction(Transaction transaction)
         {
             return account.GetTransactionHistory.Any(t => t.GetTransactionId == transaction.GetTransactionId);
@@ -192,8 +179,84 @@ public static class ObjectCreator
         {
             foreach (Account account in customer.GetCustomerAccount)
             {
-                account.ge
+                account.GetStringRepresentation();
             }
         }
+    }
+
+    
+    
+    public static void LoadAccount(Customer customer, string filePath)
+    {
+        filePath = EnsureValidExtension(filePath);
+
+        string[] lines = File.ReadAllLines(filePath);
+
+        foreach (string line in lines)
+        {
+            string[] parts = line.Split("+");
+
+            string accountType = parts[0];
+            string accountDetails = parts[1];
+            
+            // Create an account object
+            Account account = CreateAccount(accountType, accountDetails);
+            if (!IsContainAccount(account))
+            {
+                customer.GetCustomerAccount.Add(account);
+            }
+        }
+        
+        return;
+
+        bool IsContainAccount(Account account) =>
+            customer.GetCustomerAccount.Any(a => a.GetAccountNumber == account.GetAccountNumber); 
+      
+
+        Account CreateAccount(string accountType, string accountDetails)
+        {
+            if (Enum.TryParse(accountType, out AccountType accType))
+            {
+                switch (accType)
+                {
+                    case AccountType.SavingsAccount:
+                    {
+                        string[] parts = accountDetails.Split("|");
+                        string accountHolder = parts[0];
+                        long accountNumber = long.Parse(parts[1]);
+                        decimal accountBalance = decimal.Parse(parts[2]);
+                        DateTime creationDate = DateTime.Parse(parts[3]);
+                        DateTime startTime = DateTime.Parse(parts[4]);
+                        DateTime endTime = DateTime.Parse(parts[5]);
+                        
+                        // create a an account object
+                        return new SavingsAccount(accountHolder, accountNumber, accountBalance, creationDate, startTime,
+                            endTime);
+
+                    }
+                    case AccountType.CurrentAccount:
+                    {
+                        string[] parts = accountDetails.Split("|");
+                        string accountHolder = parts[0];
+                        long accountNumber = long.Parse(parts[1]);
+                        decimal accountBalance = decimal.Parse(parts[2]);
+                        DateTime creationDate = DateTime.Parse(parts[3]);
+                        
+                        // create a an account object
+                        return new CurrentAccount(accountHolder, accountNumber, accountBalance, creationDate);
+                    }
+                        
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            }
+
+            return null;
+        }
+    }
+    private enum AccountType
+    {
+        SavingsAccount,
+        CurrentAccount,
     }
 }

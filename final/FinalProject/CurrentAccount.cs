@@ -9,6 +9,11 @@ public class CurrentAccount : Account
         _overdraftLimit = 0.2m;
     }
 
+    public CurrentAccount(string accountHolder, long accountNumber, decimal accBalance, DateTime creationDAte) : base(
+        accountHolder, accountNumber, accBalance, creationDAte)
+    {
+        _overdraftLimit = 0.2m;
+    }
 
     public override string GetStringRepresentation() => $"{nameof(CurrentAccount)}:{_accountHolder}|{_accountNumber}|{_accBalance}|{_creationDAte}";
     private decimal CalculateOverdraftLimit()

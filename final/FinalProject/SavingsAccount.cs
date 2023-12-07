@@ -13,8 +13,17 @@ public class SavingsAccount : Account
         _endTime = _startTime.AddHours(2); // This can be changed for testing
         _interestCache = new Dictionary<Transaction, decimal>();
     }
+    
+    public SavingsAccount(string accountHolder, long accountNumber, decimal accBalance, DateTime creationDAte, DateTime startTime, DateTime endTime) : base(
+        accountHolder, accountNumber, accBalance, creationDAte)
+    {
+        _interestRAte = 0.1m;
+        _startTime = startTime;
+        _endTime = endTime; // This can be changed for testing
+        _interestCache = new Dictionary<Transaction, decimal>();
+    }
 
-    public override string GetStringRepresentation() => $"{nameof(CurrentAccount)}:{_accountHolder}|{_accountNumber}|{_accBalance}|{_creationDAte}";
+    public override string GetStringRepresentation() => $"{nameof(SavingsAccount)}:{_accountHolder}|{_accountNumber}|{_accBalance}|{_creationDAte}|{_startTime}|{_endTime}";
 
     
     private decimal CalculateInterest(Transaction transaction)

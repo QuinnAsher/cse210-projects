@@ -2,5 +2,8 @@
 
 public class Bill
 {
-    
+    public string SendBill()
+    {
+        return "";
+    }
 }
