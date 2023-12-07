@@ -15,13 +15,16 @@ public abstract class Transaction
         _amount = amount;
         _accountNumber = accountNumber;
         _accountBalance = accountBalance;
-        _transactionId = Generator.GenerateTransactionId();
+        _transactionId = Generator.GenerateId();
         _transactiondDateTime = DateTime.Now;
         _transactionDes = transactionDes;
     }
 
 
     public string GetTransactionId => _transactionId;
+    public DateTime GetTransactionDate => _transactiondDateTime;
+    public string GetTransactionType => _transactionType;
+    public decimal GetTransactionAmount => _amount;
 
     public string SetTransactionId
     {

@@ -19,14 +19,8 @@ public static class Generator
         var otp = random.Next(100000, 999999);
         return otp;
     }
-
-    public static string GenerateCustomerId()
-    {
-        var uniqueId = Guid.NewGuid().ToString("N");
-        return uniqueId;
-    }
-
-    public static string GenerateTransactionId()
+    
+    public static string GenerateId()
     {
         var uniqueId = Guid.NewGuid().ToString("N");
         return uniqueId;
@@ -44,7 +38,7 @@ public static class Generator
         var hashBytes = sha256.ComputeHash(passwordBytes);
 
         // convert the hash bytes to a hexadecimal string
-        var hashedPassword = BitConverter.ToString(hashBytes).Replace(", ", "");
-        return "";
+        var hashedPassword = BitConverter.ToString(hashBytes).Replace("-", "");
+        return hashedPassword;
     }
 }

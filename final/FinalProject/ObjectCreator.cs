@@ -180,4 +180,20 @@ public static class ObjectCreator
 
         return null;
     }
+
+
+    public static void SaveAccount(Customer customer, string filePath)
+    {
+        filePath = EnsureValidExtension(filePath);
+
+        StreamWriter writer = new StreamWriter(filePath);
+
+        using (writer)
+        {
+            foreach (Account account in customer.GetCustomerAccount)
+            {
+                account.ge
+            }
+        }
+    }
 }

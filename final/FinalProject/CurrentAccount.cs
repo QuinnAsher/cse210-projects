@@ -4,12 +4,13 @@ public class CurrentAccount : Account
 {
     private readonly decimal _overdraftLimit;
 
-    public CurrentAccount(string accountHolder) : base(accountHolder)
+    public CurrentAccount(string accountHolder, long accountNumber) : base(accountHolder, accountNumber)
     {
         _overdraftLimit = 0.2m;
     }
 
 
+    public override string GetStringRepresentation() => $"{nameof(CurrentAccount)}:{_accountHolder}|{_accountNumber}|{_accBalance}|{_creationDAte}";
     private decimal CalculateOverdraftLimit()
     {
         // This is a helper function to help calculate the
@@ -52,10 +53,9 @@ public class CurrentAccount : Account
                 _accBalance -= amount;
 
                 // credit the receiver's account
-                var newBalance = receiverAccount.GetAccountBalance;
-                newBalance += amount;
-
-                receiverAccount.SetAccountBalance(newBalance);
+                // var newBalance = receiverAccount.GetAccountBalance;
+                // newBalance += amount;
+                receiverAccount.UpdateAccountBalance(amount);
 
 
                 Transaction drTransaction =

@@ -3,20 +3,20 @@
 public abstract class Account
 {
     protected decimal _accBalance;
-    private string _accountHolder;
-    private long _accountNumber;
-    private DateTime _creationDAte;
+    protected string _accountHolder;
+    protected long _accountNumber;
+    protected DateTime _creationDAte;
     protected List<Transaction> _transactionsHistory;
 
-    protected Account(string accountHolder)
+    protected Account(string accountHolder, long accountNumber)
     {
-        _accountNumber = Generator.GenerateAccountNumber();
+        _accountNumber = accountNumber;
         _accountHolder = accountHolder;
         _accBalance = 0;
         _transactionsHistory = new List<Transaction>();
         _creationDAte = DateTime.Now;
     }
-
+    
 
     // Account class properties for getting data
     public decimal GetAccountBalance => _accBalance;
@@ -25,14 +25,28 @@ public abstract class Account
     public List<Transaction> GetTransactionHistory => _transactionsHistory;
     public DateTime GetCreationDateTime => _creationDAte;
 
+
+    public abstract string GetStringRepresentation();
+
     public void AddTransaction(Transaction transaction)
     {
         _transactionsHistory.Add(transaction);
     }
 
-    public void  SetAccountBalance(decimal newBalance)
+    public void  UpdateAccountBalance(decimal amount)
     {
-        _accBalance = newBalance;
+        if (amount >= 10)
+        {
+            decimal newBalance = _accBalance + amount;
+            _accBalance = newBalance;
+
+        }
+
+        else
+        {
+            throw new InvalidOperationException($"Amount most be greater or equal to $10");
+        }
+        
     }
 
     public void DisplayAlertHistory()
@@ -47,7 +61,7 @@ public abstract class Account
     }
     public void Deposit(decimal amount)
     {
-        if (amount >= 100)
+        if (amount >= 10)
             try
             {
                 _accBalance += amount;
@@ -63,7 +77,7 @@ public abstract class Account
         else
         {
             throw new InvalidOperationException(
-                $"Insufficient balance. Requested: ${amount}, Available: ${GetAccountBalance}");
+                $"Amount most be greater or equal to $10");
         }
     }
 
