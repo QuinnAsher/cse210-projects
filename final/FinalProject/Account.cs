@@ -6,14 +6,14 @@ public abstract class Account
     private string _accountHolder;
     private long _accountNumber;
     private DateTime _creationDAte;
-    protected List<ITransaction> _transactionsHistory;
+    protected List<Transaction> _transactionsHistory;
 
     protected Account(string accountHolder)
     {
         _accountNumber = Generator.GenerateAccountNumber();
         _accountHolder = accountHolder;
         _accBalance = 0;
-        _transactionsHistory = new List<ITransaction>();
+        _transactionsHistory = new List<Transaction>();
         _creationDAte = DateTime.Now;
     }
 
@@ -22,10 +22,10 @@ public abstract class Account
     public decimal GetAccountBalance => _accBalance;
     public string GetAccountHolder => _accountHolder;
     public long GetAccountNumber => _accountNumber;
-    public List<ITransaction> GetTransactionHistory => _transactionsHistory;
+    public List<Transaction> GetTransactionHistory => _transactionsHistory;
     public DateTime GetCreationDateTime => _creationDAte;
 
-    public void AddTransaction(ITransaction transaction)
+    public void AddTransaction(Transaction transaction)
     {
         _transactionsHistory.Add(transaction);
     }
@@ -34,14 +34,24 @@ public abstract class Account
     {
         _accBalance = newBalance;
     }
-    
+
+    public void DisplayAlertHistory()
+    {
+        Console.WriteLine(new string('-', 100));
+        for(int i = 0; i < _transactionsHistory.Count; i++)
+        {
+            Transaction t = _transactionsHistory[i];
+            Console.WriteLine($"{i + 1}. {t.TransactionAlert()}");
+            Console.WriteLine(new string('-' ,100));
+        }
+    }
     public void Deposit(decimal amount)
     {
         if (amount >= 100)
             try
             {
                 _accBalance += amount;
-                ITransaction transaction = new SingleCrTransaction(amount, _accountNumber, _accBalance);
+                Transaction transaction = new SingleCrTransaction(amount, _accountNumber, _accBalance, "Deposit");
                 _transactionsHistory.Add(transaction);
                 //TODO: use the TransactionAlert method to send an email alert to the holder
             }
@@ -67,7 +77,7 @@ public abstract class Account
                 _accBalance -= amount;
 
 
-                ITransaction transaction = new SingleDrTransaction(amount, _accountNumber, _accBalance);
+                Transaction transaction = new SingleDrTransaction(amount, _accountNumber, _accBalance, "Withdraw");
                 _transactionsHistory.Add(transaction);
                 //TODO: use the TransactionAlert method to send an email alert to the holder
             }
@@ -98,13 +108,13 @@ public abstract class Account
                 // deposit the amount to to receiving account
                 receiverAccount._accBalance-= amount;
 
-                ITransaction drTransaction =
-                    new MultipleDrTransaction(amount, GetAccountNumber, _accBalance, receiverAccount.GetAccountHolder);
+                Transaction drTransaction =
+                    new MultipleDrTransaction(amount, GetAccountNumber, _accBalance, "Transfer", receiverAccount.GetAccountHolder);
                 AddTransaction(drTransaction);
 
-                ITransaction crTransaction =
+                Transaction crTransaction =
                     new MultipleCrTransaction(amount, receiverAccount.GetAccountNumber,
-                        receiverAccount.GetAccountBalance, GetAccountHolder);
+                        receiverAccount.GetAccountBalance, "Transfer",GetAccountHolder);
                 receiverAccount.AddTransaction(crTransaction);
             }
 

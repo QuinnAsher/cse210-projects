@@ -25,7 +25,8 @@ public class CurrentAccount : Account
             if (amount <= CalculateOverdraftLimit() + GetAccountBalance)
             {
                 _accBalance -= amount;
-                ITransaction transaction = new SingleDrTransaction(amount, GetAccountNumber, GetAccountBalance);
+                Transaction transaction =
+                    new SingleDrTransaction(amount, GetAccountNumber, GetAccountBalance, "Withdraw");
                 _transactionsHistory.Add(transaction);
             }
 
@@ -48,25 +49,26 @@ public class CurrentAccount : Account
             if (amount <= CalculateOverdraftLimit() + GetAccountBalance)
             {
                 // debit the sender's account
-                _accBalance-= amount;
+                _accBalance -= amount;
 
                 // credit the receiver's account
-                decimal newBalance = receiverAccount.GetAccountBalance;
+                var newBalance = receiverAccount.GetAccountBalance;
                 newBalance += amount;
-                
+
                 receiverAccount.SetAccountBalance(newBalance);
 
-                
-                ITransaction drTransaction =
-                    new MultipleDrTransaction(amount, GetAccountNumber, _accBalance, receiverAccount.GetAccountHolder);
+
+                Transaction drTransaction =
+                    new MultipleDrTransaction(amount, GetAccountNumber, _accBalance, "Transfer",
+                        receiverAccount.GetAccountHolder);
                 AddTransaction(drTransaction);
 
-                ITransaction crTransaction =
+                Transaction crTransaction =
                     new MultipleCrTransaction(amount, receiverAccount.GetAccountNumber,
-                        receiverAccount.GetAccountBalance, GetAccountHolder);
+                        receiverAccount.GetAccountBalance, "Transfer", GetAccountHolder);
                 receiverAccount.AddTransaction(crTransaction);
             }
-            
+
             else
             {
                 throw new InvalidOperationException(
