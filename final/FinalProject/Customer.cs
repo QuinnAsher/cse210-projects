@@ -14,7 +14,7 @@ public class Customer
    private DateTime _dateOfBirth;
    private List<Account> _accountList;
 
-   public Customer(string customerName, string password, CustomerDetails customerDetails)
+   public Customer(string customerName, string password)
    {
       _customerId = GenerateId();
       _accountNumber = GenerateAccountNumber();

@@ -9,8 +9,7 @@ public class CurrentAccount : Account
         _overdraftLimit = 0.2m;
     }
 
-    public CurrentAccount(string accountHolder, long accountNumber, decimal accBalance, DateTime creationDAte) : base(
-        accountHolder, accountNumber, accBalance, creationDAte)
+    public CurrentAccount(string[] textDAta) : base(textDAta)
     {
         _overdraftLimit = 0.2m;
     }
@@ -32,7 +31,7 @@ public class CurrentAccount : Account
             {
                 _accBalance -= amount;
                 Transaction transaction =
-                    new SingleDrTransaction(amount, GetAccountNumber, GetAccountBalance, "Withdraw");
+                    new SingleDrTransaction(amount, GetAccountNumber, GetAccountBalance, "Withdrawal");
                 _transactionsHistory.Add(transaction);
             }
 
@@ -60,7 +59,7 @@ public class CurrentAccount : Account
                 // credit the receiver's account
                 // var newBalance = receiverAccount.GetAccountBalance;
                 // newBalance += amount;
-                receiverAccount.UpdateAccountBalance(amount);
+                receiverAccount.ReceiveAmount(amount);
 
 
                 Transaction drTransaction =

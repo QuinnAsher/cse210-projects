@@ -222,28 +222,15 @@ public static class ObjectCreator
                     case AccountType.SavingsAccount:
                     {
                         string[] parts = accountDetails.Split("|");
-                        string accountHolder = parts[0];
-                        long accountNumber = long.Parse(parts[1]);
-                        decimal accountBalance = decimal.Parse(parts[2]);
-                        DateTime creationDate = DateTime.Parse(parts[3]);
-                        DateTime startTime = DateTime.Parse(parts[4]);
-                        DateTime endTime = DateTime.Parse(parts[5]);
-                        
                         // create a an account object
-                        return new SavingsAccount(accountHolder, accountNumber, accountBalance, creationDate, startTime,
-                            endTime);
+                        return new SavingsAccount(parts);
 
                     }
                     case AccountType.CurrentAccount:
                     {
                         string[] parts = accountDetails.Split("|");
-                        string accountHolder = parts[0];
-                        long accountNumber = long.Parse(parts[1]);
-                        decimal accountBalance = decimal.Parse(parts[2]);
-                        DateTime creationDate = DateTime.Parse(parts[3]);
-                        
                         // create a an account object
-                        return new CurrentAccount(accountHolder, accountNumber, accountBalance, creationDate);
+                        return new CurrentAccount(parts);
                     }
                         
                     default:

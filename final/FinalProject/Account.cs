@@ -17,12 +17,13 @@ public abstract class Account
         _creationDAte = DateTime.Now;
     }
 
-    protected Account(string accountHolder, long accountNumber, decimal accBalance, DateTime creationDAte) : this(accountHolder, accountNumber)
+    protected Account(string[] textDAta)
     {
-        _accountNumber = accountNumber;
-        _accountHolder = accountHolder;
-        _accBalance = accBalance;
-        _creationDAte = creationDAte;
+        _accountHolder = textDAta[0];
+        _accountNumber = long.Parse(textDAta[1]);
+        _accBalance = decimal.Parse(textDAta[2]);
+        _creationDAte = DateTime.Parse(textDAta[3]);
+        _transactionsHistory = new List<Transaction>();
     }
 
     // Account class properties for getting data
@@ -40,13 +41,13 @@ public abstract class Account
         _transactionsHistory.Add(transaction);
     }
 
-    public void  UpdateAccountBalance(decimal amount)
+    public void  ReceiveAmount(decimal amount)
     {
+        // This method is a helper function that is meant to add an amount to a transferred
+        // account.
         if (amount >= 10)
         {
-            decimal newBalance = _accBalance + amount;
-            _accBalance = newBalance;
-
+            _accBalance += amount;
         }
 
         else
@@ -98,7 +99,7 @@ public abstract class Account
                 _accBalance -= amount;
 
 
-                Transaction transaction = new SingleDrTransaction(amount, _accountNumber, _accBalance, "Withdraw");
+                Transaction transaction = new SingleDrTransaction(amount, _accountNumber, _accBalance, "Withdrawal");
                 _transactionsHistory.Add(transaction);
                 //TODO: use the TransactionAlert method to send an email alert to the holder
             }
@@ -127,7 +128,7 @@ public abstract class Account
                 _accBalance -= amount;
 
                 // deposit the amount to to receiving account
-                receiverAccount._accBalance-= amount;
+                receiverAccount._accBalance += amount;
 
                 Transaction drTransaction =
                     new MultipleDrTransaction(amount, GetAccountNumber, _accBalance, "Transfer", receiverAccount.GetAccountHolder);

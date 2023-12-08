@@ -14,12 +14,11 @@ public class SavingsAccount : Account
         _interestCache = new Dictionary<Transaction, decimal>();
     }
     
-    public SavingsAccount(string accountHolder, long accountNumber, decimal accBalance, DateTime creationDAte, DateTime startTime, DateTime endTime) : base(
-        accountHolder, accountNumber, accBalance, creationDAte)
+    public SavingsAccount(string[] textDAta) : base(textDAta)
     {
         _interestRAte = 0.1m;
-        _startTime = startTime;
-        _endTime = endTime; // This can be changed for testing
+        _startTime = DateTime.Parse(textDAta[4]);
+        _endTime = DateTime.Parse(textDAta[5]); // This can be changed for testing
         _interestCache = new Dictionary<Transaction, decimal>();
     }
 
