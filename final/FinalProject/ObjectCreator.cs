@@ -45,7 +45,7 @@ public static class ObjectCreator
         }
 
         return;
-        
+
         bool IsContainTransaction(Transaction transaction)
         {
             return account.GetTransactionHistory.Any(t => t.GetTransactionId == transaction.GetTransactionId);
@@ -58,7 +58,9 @@ public static class ObjectCreator
         SingleCrTransaction,
         SingleDrTransaction,
         MultipleCrTransaction,
-        MultipleDrTransaction
+        MultipleDrTransaction,
+        InterestTransaction,
+        ChargeTransaction
     }
 
     private static Transaction CreateTransaction(string type, string details)
@@ -173,77 +175,126 @@ public static class ObjectCreator
     {
         filePath = EnsureValidExtension(filePath);
 
-        StreamWriter writer = new StreamWriter(filePath);
+        var writer = new StreamWriter(filePath);
 
         using (writer)
         {
-            foreach (Account account in customer.GetCustomerAccount)
-            {
-                account.GetStringRepresentation();
-            }
+            foreach (var account in customer.GetCustomerAccount) writer.WriteLine(account.GetStringRepresentation());
         }
     }
 
-    
-    
+
     public static void LoadAccount(Customer customer, string filePath)
     {
         filePath = EnsureValidExtension(filePath);
 
-        string[] lines = File.ReadAllLines(filePath);
+        var lines = File.ReadAllLines(filePath);
 
-        foreach (string line in lines)
+        foreach (var line in lines)
         {
-            string[] parts = line.Split("+");
+            var parts = line.Split("+");
 
-            string accountType = parts[0];
-            string accountDetails = parts[1];
-            
+            var accountType = parts[0];
+            var accountDetails = parts[1];
+
             // Create an account object
-            Account account = CreateAccount(accountType, accountDetails);
+            var account = CreateAccount(accountType, accountDetails);
             if (!IsContainAccount(account))
             {
                 customer.GetCustomerAccount.Add(account);
             }
+
+            // customer.GetCustomerAccount.Add(account);
         }
-        
+
         return;
 
-        bool IsContainAccount(Account account) =>
-            customer.GetCustomerAccount.Any(a => a.GetAccountNumber == account.GetAccountNumber); 
-      
+        bool IsContainAccount(Account account)
+        {
+            return customer.GetCustomerAccount.Any(a => a.GetAccountNumber == account.GetAccountNumber);
+        }
+
 
         Account CreateAccount(string accountType, string accountDetails)
         {
             if (Enum.TryParse(accountType, out AccountType accType))
-            {
                 switch (accType)
                 {
                     case AccountType.SavingsAccount:
                     {
-                        string[] parts = accountDetails.Split("|");
+                        var parts = accountDetails.Split("|");
                         // create a an account object
                         return new SavingsAccount(parts);
-
                     }
                     case AccountType.CurrentAccount:
                     {
-                        string[] parts = accountDetails.Split("|");
+                        var parts = accountDetails.Split("|");
                         // create a an account object
                         return new CurrentAccount(parts);
                     }
-                        
+
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
-            }
 
             return null;
         }
     }
+
     private enum AccountType
     {
         SavingsAccount,
-        CurrentAccount,
+        CurrentAccount
     }
+
+
+    public static void SaveCustomer(Bank bank, string filePath)
+    {
+        filePath = EnsureValidExtension(filePath);
+
+        var writer = new StreamWriter(filePath);
+
+        using (writer)
+        {
+            foreach (Customer c in bank.GetCustomers)
+            {
+                writer.WriteLine(c.GetStringRepresentation);
+            }
+        }
+    }
+
+    public static void LoadCustomer(Bank bank,string filePath)
+    {
+         filePath = EnsureValidExtension(filePath);
+
+         string[] lines = File.ReadAllLines(filePath);
+
+         foreach (string line in lines)
+         {
+             string[] parts = line.Split("|");
+             
+             //create customer objects
+             Customer customer = new Customer(parts);
+             
+             // add customer to bank list
+             bank.AddCustomers(customer);
+             
+         }
+    }
+
+    // public static void SaveCss(string filePath)
+    // {
+    //     StreamWriter writer = new StreamWriter(filePath);
+    //
+    //     using (writer)
+    //     {
+    //         writer.WriteLine(
+    //             ".t-msg {\n    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);\n    background-color: #f2f2f2;\n    padding: 2rem;\n    display: flex;\n    width: 30rem;\n    height: 30rem;\n    justify-content: center;\n    align-items: center;\n    border-radius: 1rem;\n}");
+    //     }
+    // }
+    //
+    // public static void LoadCss(string filePath)
+    // {
+    //     string[] lines = File.ReadAllLines(filePath);
+    // }
 }

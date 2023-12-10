@@ -2,49 +2,102 @@
 
 public class Bank
 {
-    private readonly List<Account> _listOfAccounts;
-    private readonly List<Customer> _listOfCustomers;
-    private string _bankLocation;
-    private string _bankName;
-
-
-    public Bank(string bankName, string bankLocation)
+    private readonly List<Customer> _customers = new();
+    
+    public void AddCustomers(Customer customer)
     {
-        _bankName = bankName;
-        _bankLocation = bankLocation;
-        _listOfAccounts = new List<Account>();
-        _listOfCustomers = new List<Customer>();
+        _customers.Add(customer);
+    }
+
+    public List<Customer> GetCustomers => _customers;
+    
+    private Account GetAccountByNumber(long accountNumber)
+    {
+        foreach (Customer customer in _customers)
+        {
+            Account account = customer.GetCustomerAccount.FirstOrDefault(a => a.GetAccountNumber == accountNumber);
+            if (account != null)
+            {
+                return account;
+            }
+        }
+        return null;
     }
 
 
-    public void OpenAccount(Account account, Customer customer)
+    public Account FindCustomerByName(string holderName)
     {
-        try
+        foreach (Customer customer in _customers)
         {
-            _listOfAccounts.Add(account);
-            _listOfCustomers.Add(customer);
-            Console.WriteLine("Account: {{account.accN}} opened for customer: {Customer.} at " +
-                              "{_bankName} of l");
+            Account account =
+                customer.GetCustomerAccount.FirstOrDefault(a => a.GetAccountHolder.Split(" ")[0] == holderName);
+            return account;
         }
-        catch (Exception e)
+
+        return null;
+    }
+    
+    
+    public void MakeTransfer(long senderAccountNumber, decimal amount, long receiverAccountNumber)
+    {
+        Account sender = GetAccountByNumber(senderAccountNumber);
+        if (sender == null)
         {
-            Console.WriteLine(e);
+            throw new InvalidAccountException("Sender account does not exist.");
         }
+
+        Account receiver = GetAccountByNumber(receiverAccountNumber);
+        if (receiver == null)
+        {
+            throw new InvalidAccountException("Receiver account does not exist.");
+        }
+
+        sender.Transfer(receiver, amount);
+    }
+
+    
+    public void MakeWithdrawal(long accountNumber, decimal amount)
+    {
+        Account account = GetAccountByNumber(accountNumber);
+        if (account == null)
+        {
+            throw new InvalidAccountException("Account with provided number does not exist.");
+        }
+
+        account.Withdraw(amount);
+    }
+
+    
+    public void MakeDeposit(long accountNumber, decimal amount)
+    {
+        Account account = GetAccountByNumber(accountNumber);
+        if (account == null)
+        {
+            throw new InvalidAccountException("Account with provided number does not exist.");
+        }
+
+        account.Deposit(amount);
     }
 
 
-    public void CloseAccount(Account account, Customer customer)
+    public void DisplayTransactionHistory(long accountNumber)
     {
-        try
+        Account account = GetAccountByNumber(accountNumber);
+        if (account == null)
         {
-            _listOfAccounts.Add(account);
-            _listOfCustomers.Add(customer);
-            Console.WriteLine("Account: {{account.accN}} closed for customer: {Customer.} at " +
-                              "{_bankName} of l");
+            throw new InvalidAccountException("Account with provided number does not exist.");
         }
-        catch (Exception e)
+
+        account.DisplayAlertHistory();
+    }
+
+    
+    private class InvalidAccountException : Exception
+    {
+        public InvalidAccountException(string message) : base(message)
         {
-            Console.WriteLine(e);
         }
     }
+
 }
+    

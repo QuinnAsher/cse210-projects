@@ -2,64 +2,83 @@
 
 public class SavingsAccount : Account
 {
-    private decimal _interestRAte;
-    private DateTime _startTime;
-    private DateTime _endTime;
-    private Dictionary<Transaction, decimal> _interestCache;
-    public SavingsAccount(string accountHolder, long accountNumber) : base(accountHolder, accountNumber)
+    private readonly decimal _interestRAte;
+    private readonly DateTime _startTime;
+    private readonly DateTime _endTime;
+    private readonly Dictionary<Transaction, decimal> _interestCache;
+
+    public SavingsAccount(string accountHolder, long accountNumber, string accountEmail) : base(accountHolder, accountNumber, accountEmail)
     {
-        _interestRAte = 0.1m;
+        _interestRAte = 0.05m; // 5%
         _startTime = DateTime.Now;
-        _endTime = _startTime.AddHours(2); // This can be changed for testing
+        _endTime = _startTime.AddMonths(-1); // This should be set to negative for testing
         _interestCache = new Dictionary<Transaction, decimal>();
     }
-    
+
     public SavingsAccount(string[] textDAta) : base(textDAta)
     {
-        _interestRAte = 0.1m;
-        _startTime = DateTime.Parse(textDAta[4]);
-        _endTime = DateTime.Parse(textDAta[5]); // This can be changed for testing
+        _interestRAte = 0.05m;
+        _startTime = DateTime.Parse(textDAta[5]);
+        _endTime = DateTime.Parse(textDAta[6]); // This can be changed for testing
         _interestCache = new Dictionary<Transaction, decimal>();
     }
 
-    public override string GetStringRepresentation() => $"{nameof(SavingsAccount)}:{_accountHolder}|{_accountNumber}|{_accBalance}|{_creationDAte}|{_startTime}|{_endTime}";
+    public override string GetStringRepresentation()
+    {
+        return
+            $"{nameof(SavingsAccount)}+{_accountHolder}|{_accountNumber}|{_accountBalance}|{_accountEmail}|{_creationDAte}|{_startTime}|{_endTime}";
+    }
 
-    
+    public Dictionary<Transaction, decimal> GetCachedInterest => _interestCache;
+
     private decimal CalculateInterest(Transaction transaction)
     {
-       // Track the latest CR. Transaction
-       DateTime latestCrDate = DateTime.MinValue;
+        // Track the latest CR. Transaction
+        var latestCrDate = DateTime.MinValue;
 
-       if (transaction.GetTransactionType == "CR")
-       {
-           // update the latest transaction date
-           latestCrDate = transaction.GetTransactionDate;
-       }
-       
-       // Check if any debit transaction happens after the credit transaction
-       bool hasDebitTransactionAfterCr =
-           _transactionsHistory.Any(t => t.GetTransactionType == "DR" && t.GetTransactionDate > latestCrDate);
+        if (transaction.GetTransactionType == "CR")
+            // update the latest transaction date
+            latestCrDate = transaction.GetTransactionDate;
 
-       // check for maturity and calculate interest if no DR. Transaction after CR. T
-       if (!hasDebitTransactionAfterCr && transaction.GetTransactionDate >= _endTime)
-       {
-           decimal interest = _interestRAte * transaction.GetTransactionAmount;
-           return interest;
-       }
+        // Check if any debit transaction happens after the credit transaction
+        var hasDebitTransactionAfterCr =
+            _transactionsHistory.Any(t => t.GetTransactionType == "DR" && t.GetTransactionDate > latestCrDate);
 
-       return 0m;
-    }
-    public void AddInterest()
-    {
-        // add interest to corresponding transactions
-        foreach (Transaction t in _transactionsHistory)
+        // check for maturity and calculate interest if no DR. Transaction after CR. T
+        if (!hasDebitTransactionAfterCr && transaction.GetTransactionDate >= _endTime)
         {
-            if (!_interestCache.TryGetValue(t, out decimal cashedInterest))
+            var interest = _interestRAte * transaction.GetTransactionAmount;
+            return interest;
+        }
+
+        return 0m;
+    }
+
+    public override void AddInterest()
+    {
+        // make a copy of the transaction history to avoid modification
+        // while iteration
+
+        var tempTransactions = new List<Transaction>(_transactionsHistory);
+        // add interest to corresponding transactions
+        foreach (var t in tempTransactions)
+        {
+            if (!_interestCache.TryGetValue(t, out var cachedInterest))
             {
-                cashedInterest = CalculateInterest(t);
-                _interestCache[t] = cashedInterest;
+                // this code runs when the TryGetValue method returns false
+                cachedInterest = CalculateInterest(t);
+                _interestCache[t] = cachedInterest;
             }
-            _accBalance += cashedInterest;
+
+            _accountBalance += cachedInterest;
+            if (cachedInterest > 0)
+            {
+                Transaction interestTransaction =
+                    new SingleCrTransaction(cachedInterest, _accountNumber, _accountBalance, "Earned Interest");
+                _transactionsHistory.Add(interestTransaction);
+            }
+
+            Console.WriteLine(cachedInterest > 0 ? "Interest Added successfully" : "No interest added.");
         }
     }
 }

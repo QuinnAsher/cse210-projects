@@ -1,4 +1,6 @@
-﻿namespace FinalProject;
+﻿using System.Text;
+
+namespace FinalProject;
 
 public abstract class Transaction
 {
@@ -26,7 +28,7 @@ public abstract class Transaction
     public string GetTransactionType => _transactionType;
     public decimal GetTransactionAmount => _amount;
 
-    public string  SetTransactionId
+    public string SetTransactionId
     {
         set => _transactionId = value;
     }
@@ -45,6 +47,10 @@ public abstract class Transaction
     {
         set => _transactionDes = value;
     }
+
+
+    public abstract string GetHtmlRepresentation();
+
 
     public abstract string TransactionToString();
     public abstract string TransactionAlert();

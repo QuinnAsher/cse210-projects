@@ -2,17 +2,19 @@
 
 public abstract class Account
 {
-    protected decimal _accBalance;
+    protected decimal _accountBalance;
     protected string _accountHolder;
     protected long _accountNumber;
     protected DateTime _creationDAte;
     protected List<Transaction> _transactionsHistory;
+    protected string _accountEmail;
 
-    protected Account(string accountHolder, long accountNumber)
+    protected Account(string accountHolder, long accountNumber, string accountEmail)
     {
         _accountNumber = accountNumber;
         _accountHolder = accountHolder;
-        _accBalance = 0;
+        _accountBalance = 0;
+        _accountEmail = accountEmail;
         _transactionsHistory = new List<Transaction>();
         _creationDAte = DateTime.Now;
     }
@@ -21,18 +23,31 @@ public abstract class Account
     {
         _accountHolder = textDAta[0];
         _accountNumber = long.Parse(textDAta[1]);
-        _accBalance = decimal.Parse(textDAta[2]);
-        _creationDAte = DateTime.Parse(textDAta[3]);
+        _accountBalance = decimal.Parse(textDAta[2]);
+        _accountEmail = textDAta[3];
+        _creationDAte = DateTime.Parse(textDAta[4]);
         _transactionsHistory = new List<Transaction>();
     }
 
     // Account class properties for getting data
-    public decimal GetAccountBalance => _accBalance;
+    public string GetEmail => _accountEmail;
+
+    public string SetEmail
+    {
+        set => _accountEmail = value;
+    }
+    public decimal GetAccountBalance => _accountBalance;
     public string GetAccountHolder => _accountHolder;
     public long GetAccountNumber => _accountNumber;
     public List<Transaction> GetTransactionHistory => _transactionsHistory;
     public DateTime GetCreationDateTime => _creationDAte;
 
+    public void SendAlert(Transaction transaction, string senderName, string subject)
+    {
+        EmailMaker alert= new EmailMaker("quintekc@gmail.com", _accountEmail, subject,
+            transaction.GetHtmlRepresentation(), "smtp.gmail.com", 587, "hovqwgdwhjasersb");
+        alert.SendMail(senderName, _accountHolder);
+    }
 
     public abstract string GetStringRepresentation();
 
@@ -41,40 +56,46 @@ public abstract class Account
         _transactionsHistory.Add(transaction);
     }
 
-    public void  ReceiveAmount(decimal amount)
+    public virtual void AddInterest()
+    {
+    }
+
+    public void ReceiveAmount(decimal amount)
     {
         // This method is a helper function that is meant to add an amount to a transferred
         // account.
         if (amount >= 10)
-        {
-            _accBalance += amount;
-        }
+            _accountBalance += amount;
 
         else
-        {
-            throw new InvalidOperationException($"Amount most be greater or equal to $10");
-        }
-        
+            throw new InvalidTransferAmountException($"Amount most be greater or equal to $10");
     }
 
     public void DisplayAlertHistory()
     {
         Console.WriteLine(new string('-', 100));
-        for(int i = 0; i < _transactionsHistory.Count; i++)
+        for (var i = 0; i < _transactionsHistory.Count; i++)
         {
-            Transaction t = _transactionsHistory[i];
+            var t = _transactionsHistory[i];
             Console.WriteLine($"{i + 1}. {t.TransactionAlert()}");
-            Console.WriteLine(new string('-' ,100));
+            Console.WriteLine(new string('-', 100));
         }
     }
+
     public void Deposit(decimal amount)
     {
         if (amount >= 10)
             try
             {
-                _accBalance += amount;
-                Transaction transaction = new SingleCrTransaction(amount, _accountNumber, _accBalance, "Deposit");
+                _accountBalance += amount;
+                Transaction transaction = new SingleCrTransaction(amount, _accountNumber, _accountBalance, "Deposit");
                 _transactionsHistory.Add(transaction);
+                
+                //send an email
+                SendAlert(transaction, "quinTekc", "Deposit Alert");
+                
+                DepositCharge(amount);
+                Console.ReadLine();
                 //TODO: use the TransactionAlert method to send an email alert to the holder
             }
             catch (Exception e)
@@ -83,10 +104,8 @@ public abstract class Account
             }
 
         else
-        {
-            throw new InvalidOperationException(
+            throw new InvalidDepositAmountException(
                 $"Amount most be greater or equal to $10");
-        }
     }
 
 
@@ -94,20 +113,21 @@ public abstract class Account
     {
         try
         {
-            if (amount <= _accBalance)
+            if (amount <= _accountBalance)
             {
-                _accBalance -= amount;
+                _accountBalance -= amount;
 
 
-                Transaction transaction = new SingleDrTransaction(amount, _accountNumber, _accBalance, "Withdrawal");
+                Transaction transaction = new SingleDrTransaction(amount, _accountNumber, _accountBalance, "Withdrawal");
                 _transactionsHistory.Add(transaction);
+                WithdrawalCharge(amount);
                 //TODO: use the TransactionAlert method to send an email alert to the holder
             }
 
 
             else
             {
-                throw new InvalidOperationException(
+                throw new InsufficientFundsException(
                     $"Insufficient balance. Requested: ${amount}, Available: ${GetAccountBalance}");
             }
         }
@@ -122,33 +142,183 @@ public abstract class Account
     {
         try
         {
-            if (amount <= _accBalance)
+            if (amount <= _accountBalance)
             {
                 // debit the amount from sending account
-                _accBalance -= amount;
+                _accountBalance -= amount;
 
                 // deposit the amount to to receiving account
-                receiverAccount._accBalance += amount;
+                receiverAccount._accountBalance += amount;
 
                 Transaction drTransaction =
-                    new MultipleDrTransaction(amount, GetAccountNumber, _accBalance, "Transfer", receiverAccount.GetAccountHolder);
+                    new MultipleDrTransaction(amount, GetAccountNumber, _accountBalance, "Transfer",
+                        receiverAccount.GetAccountHolder);
                 AddTransaction(drTransaction);
+                TransferCharge(amount);
 
                 Transaction crTransaction =
                     new MultipleCrTransaction(amount, receiverAccount.GetAccountNumber,
-                        receiverAccount.GetAccountBalance, "Transfer",GetAccountHolder);
+                        receiverAccount.GetAccountBalance, "Transfer", GetAccountHolder);
                 receiverAccount.AddTransaction(crTransaction);
+                receiverAccount.TransferCharge(amount);
             }
 
             else
             {
-                throw new InvalidOperationException(
+                throw new InsufficientFundsException(
                     $"Insufficient balance. Requested: ${amount}, Available: ${GetAccountBalance}");
             }
         }
         catch (Exception e)
         {
             Console.WriteLine(e.Message);
+        }
+    }
+
+    protected class InsufficientFundsException : Exception
+    {
+        public InsufficientFundsException(string message) : base(message)
+        {
+        }
+    }
+
+    private class InvalidDepositAmountException : Exception
+    {
+        public InvalidDepositAmountException(string message) : base(message)
+        {
+        }
+    }
+
+
+    private class InvalidTransferAmountException : Exception
+    {
+        public InvalidTransferAmountException(string message) : base(message)
+        {
+        }
+    }
+
+
+    protected virtual void DepositCharge(decimal amount)
+    {
+        if (amount <= 100)
+        {
+            // charge 1 dollar
+            _accountBalance -= 0.5m;
+            Transaction transaction =
+                new SingleDrTransaction(0.5m, _accountNumber, _accountBalance, "Deposit Charge");
+            _transactionsHistory.Add(transaction);
+            SendAlert(transaction, "quinTekc", "Deposit Charge Alert");
+        }
+
+        else if (amount is > 100 and <= 500)
+        {
+            _accountBalance -= 1;
+            Transaction transaction =
+                new SingleDrTransaction(1m, _accountNumber, _accountBalance, "Deposit Charge");
+            _transactionsHistory.Add(transaction);
+            SendAlert(transaction, "quinTekc", "Deposit Charge Alert");
+        }
+
+        else if (amount is > 500 and <= 1000)
+        {
+            // charge 1 dollar
+            _accountBalance -= 1.5m;
+            Transaction transaction =
+                new SingleDrTransaction(1.5m, _accountNumber, _accountBalance, "Deposit Charge");
+            _transactionsHistory.Add(transaction);
+            SendAlert(transaction, "quinTekc", "Deposit Charge Alert");
+        }
+
+        // else
+        // {
+        //     // charge 1 dollar
+        //     _accBalance -= 5;
+        //     Transaction transaction =
+        //         new SingleDrTransaction(amount, _accountNumber, _accBalance, "Deposit Charge");
+        // }
+    }
+
+
+    protected void WithdrawalCharge(decimal amount)
+    {
+        if (amount <= 100)
+        {
+            // charge 1 dollar
+            _accountBalance -= 0.5m;
+            Transaction transaction =
+                new SingleDrTransaction(0.5m, _accountNumber, _accountBalance, "Withdrawal Charge");
+            _transactionsHistory.Add(transaction);
+            SendAlert(transaction, "quinTekc", "Withdrawal Charge Alert");
+        }
+
+        else if (amount is > 100 and <= 500)
+        {
+            _accountBalance -= 1;
+            Transaction transaction =
+                new SingleDrTransaction(1m, _accountNumber, _accountBalance, "Withdrawal Charge");
+            _transactionsHistory.Add(transaction);
+            SendAlert(transaction, "quinTekc", "Withdrawal Charge Alert");
+        }
+
+        else if (amount is > 500 and <= 1000)
+        {
+            // charge 1 dollar
+            _accountBalance -= 1.5m;
+            Transaction transaction =
+                new SingleDrTransaction(1.5m, _accountNumber, _accountBalance, "Withdrawal Charge");
+            _transactionsHistory.Add(transaction);
+            SendAlert(transaction, "quinTekc", "Withdrawal Charge Alert");
+        }
+
+        else
+        {
+            // charge 1 dollar
+            _accountBalance -= 5;
+            Transaction transaction =
+                new SingleDrTransaction(5m, _accountNumber, _accountBalance, "Withdrawal Charge");
+            _transactionsHistory.Add(transaction);
+            SendAlert(transaction, "quinTekc", "Withdrawal Charge Alert");
+        }
+    }
+
+
+    public void TransferCharge(decimal amount)
+    {
+        if (amount <= 100)
+        {
+            // charge 1 dollar
+            _accountBalance -= 0.25m;
+            Transaction transaction =
+                new SingleDrTransaction(0.25m, _accountNumber, _accountBalance, "Transfer Charge");
+            _transactionsHistory.Add(transaction);
+            SendAlert(transaction, "quinTekc", "Transfer Charge Alert");
+        }
+
+        else if (amount is > 100 and <= 500)
+        {
+            _accountBalance -= 0.5m;
+            Transaction transaction =
+                new SingleDrTransaction(0.5m, _accountNumber, _accountBalance, "Transfer Charge");
+            _transactionsHistory.Add(transaction);
+            SendAlert(transaction, "quinTekc", "Transfer Charge Alert");
+        }
+
+        else if (amount is > 500 and <= 1000)
+        {
+            _accountBalance -= 0.75m;
+            Transaction transaction =
+                new SingleDrTransaction(0.75m, _accountNumber, _accountBalance, "Transfer Charge");
+            _transactionsHistory.Add(transaction);
+            SendAlert(transaction, "quinTekc", "Transfer Charge Alert");
+        }
+
+        else
+        {
+            _accountBalance -= 2.5m;
+            Transaction transaction =
+                new SingleDrTransaction(2.5m, _accountNumber, _accountBalance, "Transfer Charge");
+            _transactionsHistory.Add(transaction);
+            SendAlert(transaction, "quinTekc", "Transfer Charge Alert");
         }
     }
 }

@@ -11,8 +11,9 @@ public class Bill
         _account = account;
         _billDate = DateTime.Now;
     }
-    public string SendBill()
+
+    public void SendBill(Transaction transaction, EmailMaker emailMaker)
     {
-        return "";
+        
     }
 }

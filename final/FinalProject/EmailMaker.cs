@@ -25,7 +25,7 @@ public class EmailMaker
         }
 
         // Method to send an email
-        public void SendMail(string senderName, string recipientName)
+        public   async Task  SendMail(string senderName, string recipientName)
         {
             // Create a new MimeMessage object to represent the email message
             MimeMessage email = new MimeMessage();
@@ -54,16 +54,16 @@ public class EmailMaker
             try
             {
                 // Connect to the SMTP server
-                smtp.Connect(_smtpHost, _smptPort, false);
+                await smtp.ConnectAsync(_smtpHost, _smptPort, false);
 
                 // Authenticate with the sender's email address and password
-                smtp.Authenticate(_senderEmail, _password);
+                await smtp.AuthenticateAsync(_senderEmail, _password);
 
                 // Send the email message
-                smtp.Send(email);
+                await smtp.SendAsync(email);
 
                 // Disconnect from the SMTP server
-                smtp.Disconnect(true);
+                await smtp.DisconnectAsync(true);
 
                 // Display a success message if the email was sent successfully
                 Console.WriteLine("Email sent successfully.");
