@@ -59,8 +59,6 @@ public static class ObjectCreator
         SingleDrTransaction,
         MultipleCrTransaction,
         MultipleDrTransaction,
-        InterestTransaction,
-        ChargeTransaction
     }
 
     private static Transaction CreateTransaction(string type, string details)
@@ -274,6 +272,45 @@ public static class ObjectCreator
         bool IsContainCustomer(Customer customer)
         {
             return bank.GetCustomersList.Any(c => c.GetCustomerId == customer.GetCustomerId);
+        }
+    }
+
+
+    public static void SaveBank(Bank bank, string filePath)
+    {
+        filePath = EnsureValidExtension(filePath);
+
+        StreamWriter writer = new StreamWriter(filePath);
+
+        using (writer)
+        {
+            writer.WriteLine(bank.ToString());
+        }
+    }
+
+    public static void LoadBank(ConsoleInterface @interface, string filePath)
+    {
+        filePath = EnsureValidExtension(filePath);
+        
+        // create a bank object
+        Bank bank = new Bank();
+        
+        // read the file and split by line
+        string fileContent = File.ReadAllText(filePath);
+        string[] lines = fileContent.Split(Environment.NewLine);
+        
+        // iterate each line
+        foreach (string line in lines)
+        {
+            // skip empty line
+            if (string.IsNullOrEmpty(line)) continue;
+            
+            // Create Customer object
+            string[] customerData = line.Split("|");
+            Customer customer = new Customer(customerData);
+            
+            // populate the bank with the customers objects
+            bank.AddCustomers(customer);
         }
     }
 }
