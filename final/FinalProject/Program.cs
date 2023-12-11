@@ -7,83 +7,42 @@ public class Program
 {
     private static void Main(string[] args)
     {
-        //create a bank object to manage customers
-        //  Bank bank = new Bank();
+        
+        // create a bank object
+        Bank bank = new Bank();
+        LoadBank(bank, "customers_data");
+        foreach (Customer c in bank.GetCustomersList)
+        {
+            Console.WriteLine(c.GetCustomerName);
+        }
+        // an account by number
+        // Account obadiah = bank.GetAccountByNumber(9388145530);
         //
-        //  // this initialize a customer account and create an account
-        //  var dateOfBirth = new DateTime(2015, 09, 03);
-        //  var divine = new Customer("Divine", "1234", "Federal Lowcost", "pauldivineagionoja@gmail.com", "08847373393847",
-        //      dateOfBirth, "current");
-        //  var daniel = new Customer("Daniel", "1234", "Federal Lowcost", "pauldivineagionoja@yahoo.com", "08847373393847",
-        //      dateOfBirth, "current");
-        //  
-        //  
-        //  // access the accounts
-        //  Account divineAccount = divine.GetCustomerAccount;
-        //  Account danielAccount = daniel.GetCustomerAccount;
-        //  
-        //
-        // // add the customers to the bank
-        // bank.AddCustomers(divine);
-        // bank.AddCustomers(daniel);
-        //
-        //
-        //  // perform some transactions with customer divine
-        //  bank.MakeDeposit(divineAccount.GetAccountNumber, 20000);
-        //  bank.MakeWithdrawal(divineAccount.GetAccountNumber, 4500);
-        //  bank.MakeTransfer(divineAccount.GetAccountNumber, 2000.65m, danielAccount.GetAccountNumber);
-        //  
-        //  // perfrom some transactions with customer daniel
-        //  bank.MakeDeposit(danielAccount.GetAccountNumber, 4000);
-        //  bank.MakeTransfer(danielAccount.GetAccountNumber, 1000, divineAccount.GetAccountNumber);
-        //   
-        // // display transaction history
-        // bank.DisplayTransactionHistory(divineAccount.GetAccountNumber);
-        // bank.DisplayTransactionHistory(danielAccount.GetAccountNumber);
-        //
-        // // save all the data
-        // SaveTransaction(divineAccount, "divineT");
-        // SaveTransaction(danielAccount, "danielT");
-        //
-        // SaveAccount(divine, "divineA");
-        // SaveAccount(daniel, "danielA");
-        //
-        // SaveCustomer(bank, divine.GetCustomerId, "divineC");
-        // SaveCustomer(bank, daniel.GetCustomerId, "danielC");
+        // obadiah.Deposit(20000);
 
-        // now load the data
-        // Bank loadBank = new Bank();
-        // LoadCustomer(loadBank, "divineC");
-        // LoadCustomer(loadBank, "danielC");
+        // SaveTransaction(obadiah);
+        // obadiah.DisplayAlertHistory();
         //
-        // // assign a customer object
-        // Customer divine1 = loadBank.GetCustomersList[0];
-        // Customer daniel1 = loadBank.GetCustomersList[1];
+        // Account divine = bank.GetAccountByNumber(6754226566);
         //
-        // // load the customer account
-        // LoadAccount(divine1, "divineA");
-        // LoadAccount(daniel1, "divineA");
-        //
-        // // // assign account to their variable
-        // Account divine1Account = loadBank.GetCustomersList[0].GetCustomerAccount;
-        //                           
-        // Account daniel1Account = loadBank.GetCustomersList[1].GetCustomerAccount;
-        //
-        //
-        // // load the account Transaction
-        // LoadTransaction(divine1Account, "divineT");
-        // LoadTransaction(daniel1Account, "danielT");
-        //
-        // Console.WriteLine(loadBank.GetCustomersList.Count);
-        // loadBank.GetCustomersList[0].GetCustomerAccount.DisplayAlertHistory();
-        // Dictionary<long, Customer>
-
+        // // make transfer betwen customers
+        // obadiah.Deposit(20000);
+        // obadiah.Transfer(divine, 5000);
+        
+        // Console.WriteLine(bank.GetCustomersList.Count);
+        // Console.WriteLine(obadiah.GetTransactionHistory[0].GetStringRepresentation());
+        // foreach (var VARIABLE in bank.GetCustomersList)
+        // {
+        //     VARIABLE.GetCustomerAccount.DisplayAlertHistory();
+        // }
+        
+        
 
         var consoleInterface = new ConsoleInterface();
         try
         {
             Console.WriteLine(consoleInterface.GetUserName);
-            consoleInterface.CreateCustomer();
+            // consoleInterface.CreateCustomer();
             Console.WriteLine(consoleInterface.GetUserName);
         }
 

@@ -7,7 +7,8 @@ public class SavingsAccount : Account
     private readonly DateTime _endTime;
     private readonly Dictionary<Transaction, decimal> _interestCache;
 
-    public SavingsAccount(string accountHolder, long accountNumber, string accountEmail) : base(accountHolder, accountNumber, accountEmail)
+    public SavingsAccount(string accountHolder, long accountNumber, string accountEmail, string customerId) : base(
+        accountHolder, accountNumber, accountEmail, customerId)
     {
         _interestRAte = 0.05m; // 5%
         _startTime = DateTime.Now;
@@ -26,7 +27,7 @@ public class SavingsAccount : Account
     public override string GetStringRepresentation()
     {
         return
-            $"{nameof(SavingsAccount)}+{_accountHolder}|{_accountNumber}|{_accountBalance}|{_accountEmail}|{_creationDAte}|{_startTime}|{_endTime}";
+            $"{nameof(SavingsAccount)}+{_accountHolder}|{_accountNumber}|{_accountBalance}|{_accountEmail}|{_creationDAte}|{_startTime}|{_endTime}|{_foreignKey}";
     }
 
     public Dictionary<Transaction, decimal> GetCachedInterest => _interestCache;
@@ -74,7 +75,7 @@ public class SavingsAccount : Account
             if (cachedInterest > 0)
             {
                 Transaction interestTransaction =
-                    new SingleCrTransaction(cachedInterest, _accountNumber, _accountBalance, "Earned Interest");
+                    new SingleCrTransaction(cachedInterest, _accountNumber, _accountBalance, "Earned Interest", _accountNumber);
                 _transactionsHistory.Add(interestTransaction);
             }
 

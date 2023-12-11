@@ -14,7 +14,7 @@ public class ConsoleInterface
     private int _otpToCompareTo;
     private string _userName;
     private Bank _bank;
-    
+
     public ConsoleInterface()
     {
         _otp = GenerateOtp();
@@ -23,6 +23,7 @@ public class ConsoleInterface
     }
 
     public string GetUserName => _userName;
+
     public void CreateCustomer()
     {
         // Prompt and validate user information
@@ -52,15 +53,15 @@ public class ConsoleInterface
         // Send OTP email
         SendOtp();
 
-        bool isValidOtp = false;
-        int retries = 3;
+        var isValidOtp = false;
+        var retries = 3;
 
         while (!isValidOtp && retries > 0)
         {
             Console.WriteLine($"Enter the OTP sent to your email address: debugging {_otp}");
             try
             {
-                int enteredOtp = int.Parse(Console.ReadLine());
+                var enteredOtp = int.Parse(Console.ReadLine());
 
                 if (enteredOtp == _otpToCompareTo)
                 {
@@ -80,20 +81,22 @@ public class ConsoleInterface
 
         if (isValidOtp)
         {
-            // Create customer
-            var customer = new Customer(customerName, password, address, emailAddress, phoneNumber, dateOfBirth, accType);
-            
-            // add the customer to the bank class
-            _bank.AddCustomers(customer);
-            
             // create a username
             GenerateUserName(customerName);
-            
+
+            // Create customer
+            var customer = new Customer(customerName, password, address, emailAddress, phoneNumber, dateOfBirth,
+                accType, _userName);
+
+            // add the customer to the bank class
+            _bank.AddCustomers(customer);
+
             // now save this customer to the bank Data base
-            SaveCustomer(_bank, customer.GetCustomerId, _userName);
-            
-            Console.WriteLine($"Account created successfully! Account type: {accType}");
-            
+            SaveCustomer(_bank, customer.GetCustomerId, "customers_data");
+
+            Console.WriteLine($"Account created successfully! Account type: {accType.ToUpper()} ACCOUNT");
+
+            // save this information in the bank database
         }
         else
         {
@@ -106,9 +109,9 @@ public class ConsoleInterface
         async void SendOtp()
         {
             // Create an EmailMaker object with the parameters
-            EmailMaker email = new EmailMaker("quintekc@gmail.com", emailAddress, "Account Verification",
+            var email = new EmailMaker("quintekc@gmail.com", emailAddress, "Account Verification",
                 EmailBody(customerName, _otp), "smtp.gmail.com", 587, "hovqwgdwhjasersb");
-    
+
             // Await the SendMail method
             await email.SendMail("quinTekc-Support", customerName);
         }
@@ -307,28 +310,27 @@ public class ConsoleInterface
 
     private void GenerateUserName(string name)
     {
-        string[] userName = name.Split(" ");
-        Random random = new Random();
+        var userName = name.Split(" ");
+        var random = new Random();
 
-        int num = random.Next(100,999);
+        var num = random.Next(100, 999);
         _userName = $"{userName[0].ToLower()}{num}";
     }
     /**************************************************************************************************************/
     // helper functions to aid in account creations
     /**************************************************************************************************************/
-    
+
     /**************************************************************************************************************/
     // Login section
     /**************************************************************************************************************/
 
     public void Login(string userName, string password)
     {
-        // communicate with the bank
+        // communicate with the data base to get user name and password
+        // LoadCustomer(_bank, "divine672");
     }
-    
+
     /**************************************************************************************************************/
     // Login section
     /**************************************************************************************************************/
-
-
 }

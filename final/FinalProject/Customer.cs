@@ -14,9 +14,10 @@ public class Customer
     private DateTime _dateOfBirth;
     private string _accontType;
     private Account _account;
+    private string _userName;
 
     public Customer(string customerName, string password, string address, string emailAddress, string phoneNumber,
-        DateTime dateOfBirth, string accountType)
+        DateTime dateOfBirth, string accountType, string userName)
     {
         _customerId = GenerateId();
         _accountNumber = GenerateAccountNumber();
@@ -27,6 +28,7 @@ public class Customer
         _phoneNumber = phoneNumber;
         _dateOfBirth = dateOfBirth;
         _accontType = accountType;
+        _userName = userName;
         _account = CreateAccount(_accontType);
     }
 
@@ -40,12 +42,18 @@ public class Customer
         _emailAddress = textData[5];
         _phoneNumber = textData[6];
         _dateOfBirth = DateTime.Parse(textData[7]);
-        _account = CreateAccount(textData[8]);
+        _accontType = textData[8];
+        _userName = textData[9];
+        _account = CreateAccount(_accontType);
     }
 
 
+    public string GetStringRepresentation =>
+        $"{_customerId}|{_customerName}|{_accountNumber}|{_password}|{_address}|{_emailAddress}|{_phoneNumber}|{_dateOfBirth}|{_accontType}|{_userName}";
+
     // Customer getters
     public string GetCustomerId => _customerId;
+    public string GetUserName => _userName;
 
     public Account SetAccount
     {
@@ -67,9 +75,6 @@ public class Customer
 
     public Account GetCustomerAccount => _account;
 
-    public string GetStringRepresentation =>
-        $"{_customerId}|{_customerName}|{_accountNumber}|{_password}|{_address}|{_emailAddress}|{_phoneNumber}|{_dateOfBirth}|{_accontType}";
-
 
     private Account CreateAccount(string accountType)
     {
@@ -77,11 +82,11 @@ public class Customer
         {
             case "savings":
 
-                return new SavingsAccount(_customerName, _accountNumber, _emailAddress);
+                return new SavingsAccount(_customerName, _accountNumber, _emailAddress, _customerId);
 
 
             case "current":
-                return new CurrentAccount(_customerName, _accountNumber, _emailAddress);
+                return new CurrentAccount(_customerName, _accountNumber, _emailAddress, _customerId);
         }
 
         return null;

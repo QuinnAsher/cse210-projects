@@ -1,17 +1,34 @@
-﻿namespace FinalProject;
+﻿using System.Text;
+
+namespace FinalProject;
 
 public class Bank
 {
     private readonly List<Customer> _customersList = new();
+
+
+    public Bank()
+    {
+    }
+    
+    
+    public List<Customer> GetCustomersList => _customersList;
 
     public void AddCustomers(Customer customer)
     {
         _customersList.Add(customer);
     }
 
-    public List<Customer> GetCustomersList => _customersList;
 
-    private Account GetAccountByNumber(long accountNumber)
+    public override string ToString()
+    {
+        var builder = new StringBuilder();
+        foreach (var customer in _customersList) builder.AppendLine(customer.GetStringRepresentation);
+        return builder.ToString();
+    }
+
+
+    public Account GetAccountByNumber(long accountNumber)
     {
         foreach (var customer in _customersList)
             if (customer.HasAccount)

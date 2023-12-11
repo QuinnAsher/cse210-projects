@@ -66,7 +66,7 @@ public class EmailMaker
                 await smtp.DisconnectAsync(true);
 
                 // Display a success message if the email was sent successfully
-                Console.WriteLine("Email sent successfully.");
+                // Console.WriteLine("Email sent successfully.");
             }
             catch (Exception ex)
             {

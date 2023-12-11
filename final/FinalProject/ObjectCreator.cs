@@ -12,43 +12,56 @@ public static class ObjectCreator
     }
 
 
-    public static void SaveTransaction(Account account, string filePath)
+    public static void SaveTransaction(Account account)
     {
-        filePath = EnsureValidExtension(filePath);
+        var filePath = EnsureValidExtension("transactions_data");
 
-        var writer = new StreamWriter(filePath);
+        var writer = new StreamWriter(filePath, true); // append to file TODO; there might be issue with appending to file
         using (writer)
         {
-            // writer.WriteLine("type, tType,tID,amount,accNum,dateT,AName");
-            foreach (var t in account.GetTransactionHistory) writer.WriteLine(t.TransactionToString());
+            foreach (var t in account.GetTransactionHistory)
+            {
+                bool transactionExit = File.ReadAllLines(filePath).Any(line => line.Contains(t.GetTransactionId));
+                if (!transactionExit) continue; 
+                writer.WriteLine(t.GetStringRepresentation());
+            }
         }
     }
 
-    public static void LoadTransaction(Account account, string filePath)
+    private static void LoadTransaction(Account account)
     {
-        filePath = EnsureValidExtension(filePath);
+        var filePath = EnsureValidExtension("transactions_data");
         var lines = File.ReadAllLines(filePath);
 
         foreach (var line in lines)
         {
+            if (string.IsNullOrEmpty(line)) continue;
+
             var parts = line.Split("+");
             var transactionType = parts[0];
             var transactionDetails = parts[1];
 
             // create a Transaction Object
             var transaction = CreateTransaction(transactionType, transactionDetails);
-
-            // call the isContain method to make sure that duplicate Transactions are not added
-            if (!IsContainTransaction(transaction))
-                // Console.WriteLine("Transaction created successfully");
+            
+            // get the foreign key to associate an account with a transaction
+            if (!IsForeignKeyMatch(transaction) && !IsContainTransaction(transaction))
+            {
+                // load the transactions to the associated account
                 account.AddTransaction(transaction);
+            }
         }
 
         return;
-
+        
         bool IsContainTransaction(Transaction transaction)
         {
             return account.GetTransactionHistory.Any(t => t.GetTransactionId == transaction.GetTransactionId);
+        }
+
+        bool IsForeignKeyMatch(Transaction transaction)
+        {
+            return account.GetAccountNumber == transaction.GetForeignKey;
         }
     }
 
@@ -58,133 +71,59 @@ public static class ObjectCreator
         SingleCrTransaction,
         SingleDrTransaction,
         MultipleCrTransaction,
-        MultipleDrTransaction,
+        MultipleDrTransaction
     }
 
     private static Transaction CreateTransaction(string type, string details)
     {
-        if (Enum.TryParse(type, out TransactionTypes tType))
-            switch (tType)
+        if (!Enum.TryParse(type, out TransactionTypes tType)) return null;
+        switch (tType)
+        {
+            case TransactionTypes.SingleDrTransaction:
             {
-                case TransactionTypes.SingleDrTransaction:
-                {
-                    var parts = details.Split("|");
-                    var transactionType = parts[0];
-                    var transactionId = parts[1];
-                    var amount = decimal.Parse(parts[2]);
-                    var accountNumber = long.Parse(parts[3]);
-                    var accountBalance = decimal.Parse(parts[4]);
-                    var transactionDate = DateTime.Parse(parts[5]);
-                    var transactionDes = parts[6];
-
-                    // create a Transaction object
-                    Transaction transaction =
-                        new SingleDrTransaction(amount, accountNumber, accountBalance, transactionDes);
-
-                    // set the object properties
-                    transaction.SetTransactionId = transactionId;
-                    transaction.SetTransactionType = transactionType;
-                    transaction.SetTransactionDate = transactionDate;
-
-                    // Console.WriteLine($"For debugging: {transaction.GetType().Name} created: ");
-                    return transaction;
-                }
-
-                case TransactionTypes.SingleCrTransaction:
-                {
-                    var parts = details.Split("|");
-                    var transactionType = parts[0];
-                    var transactionId = parts[1];
-                    var amount = decimal.Parse(parts[2]);
-                    var accountNumber = long.Parse(parts[3]);
-                    var accountBalance = decimal.Parse(parts[4]);
-                    var transactionDate = DateTime.Parse(parts[5]);
-                    var transactionDes = parts[6];
-
-                    // create a Transaction object
-                    Transaction transaction =
-                        new SingleCrTransaction(amount, accountNumber, accountBalance, transactionDes);
-
-                    // set the object properties
-                    transaction.SetTransactionId = transactionId;
-                    transaction.SetTransactionType = transactionType;
-                    transaction.SetTransactionDate = transactionDate;
-
-                    // Console.WriteLine($"For debugging: {transaction.GetType().Name} created: ");
-                    return transaction;
-                }
-
-                case TransactionTypes.MultipleDrTransaction:
-                {
-                    var parts = details.Split("|");
-                    var transactionType = parts[0];
-                    var transactionId = parts[1];
-                    var amount = decimal.Parse(parts[2]);
-                    var accountNumber = long.Parse(parts[3]);
-                    var accountBalance = decimal.Parse(parts[4]);
-                    var transactionDate = DateTime.Parse(parts[5]);
-                    var transactionDes = parts[6];
-                    var receiver = parts[7];
-
-                    // create a Transaction object
-                    Transaction transaction =
-                        new MultipleDrTransaction(amount, accountNumber, accountBalance, transactionDes, receiver);
-
-                    // set the object properties
-                    transaction.SetTransactionId = transactionId;
-                    transaction.SetTransactionType = transactionType;
-                    transaction.SetTransactionDate = transactionDate;
-
-                    // Console.WriteLine($"For debugging: {transaction.GetType().Name} created: ");
-                    return transaction;
-                }
-
-                case TransactionTypes.MultipleCrTransaction:
-                {
-                    var parts = details.Split("|");
-                    var transactionType = parts[0];
-                    var transactionId = parts[1];
-                    var amount = decimal.Parse(parts[2]);
-                    var accountNumber = long.Parse(parts[3]);
-                    var accountBalance = decimal.Parse(parts[4]);
-                    var transactionDate = DateTime.Parse(parts[5]);
-                    var transactionDes = parts[6];
-                    var sender = parts[7];
-
-                    // create a Transaction object
-                    Transaction transaction =
-                        new MultipleCrTransaction(amount, accountNumber, accountBalance, transactionDes, sender);
-
-                    // set the object properties
-                    transaction.SetTransactionId = transactionId;
-                    transaction.SetTransactionType = transactionType;
-                    transaction.SetTransactionDate = transactionDate;
-
-                    // Console.WriteLine($"For debugging: {transaction.GetType().Name} created: ");
-                    return transaction;
-                }
+                Transaction transaction = new SingleDrTransaction(details.Split("|"));
+                return transaction;
             }
 
-        return null;
-    }
+            case TransactionTypes.SingleCrTransaction:
+            {
+                Transaction transaction = new SingleCrTransaction(details.Split("|"));
+                return transaction;
+            }
 
+            case TransactionTypes.MultipleDrTransaction:
+            {
+                Transaction transaction = new MultipleDrTransaction(details.Split("|"));
+                return transaction;
+            }
 
-    public static void SaveAccount(Customer customer, string filePath)
-    {
-        filePath = EnsureValidExtension(filePath);
-
-        var writer = new StreamWriter(filePath);
-
-        using (writer)
-        {
-            writer.WriteLine(customer.GetCustomerAccount.GetStringRepresentation());
+            case TransactionTypes.MultipleCrTransaction:
+            {
+                Transaction transaction = new MultipleCrTransaction(details.Split("|"));
+                return transaction;
+            }
+            default:
+                throw new ArgumentOutOfRangeException();
         }
     }
 
 
-    public static void LoadAccount(Customer customer, string filePath)
+    private static void SaveAccount(Account account)
     {
-        filePath = EnsureValidExtension(filePath);
+        var filePath = EnsureValidExtension("accounts_data");
+
+        var writer = new StreamWriter(filePath, true);
+
+        using (writer)
+        {
+            writer.WriteLine(account.GetStringRepresentation());
+        }
+    }
+
+
+    private static void LoadAccount(Customer customer)
+    {
+        var filePath = EnsureValidExtension("accounts_data");
 
         var lines = File.ReadAllLines(filePath);
 
@@ -199,7 +138,11 @@ public static class ObjectCreator
             var account = CreateAccount(accountType, accountDetails);
 
             // This associates an account with a customer
-            customer.SetAccount = account;
+            if (customer.GetCustomerId == account.GetForeignKey)
+            {
+                customer.SetAccount = account;
+            }
+           
         }
 
         return;
@@ -241,37 +184,48 @@ public static class ObjectCreator
     {
         filePath = EnsureValidExtension(filePath);
 
-        var writer = new StreamWriter(filePath);
-
+        var writer = new StreamWriter(filePath, true);
         using (writer)
         {
-            var customer = bank.GetCustomersList.FirstOrDefault(c => c.GetCustomerId == customerId);
+            var customer = bank.GetCustomersList.FirstOrDefault(c => customerId == c.GetCustomerId);
+            if (customer != null)
             {
-                if (customer != null) writer.WriteLine(customer.GetStringRepresentation);
+                writer.WriteLine(customer.GetStringRepresentation);
+                
+                // save transaction and account
+                SaveAccount(customer.GetCustomerAccount);
+                SaveTransaction(customer.GetCustomerAccount);
             }
         }
     }
 
-    public static void LoadCustomer(Bank bank, string filePath)
+    private static Customer LoadCustomer(Bank bank, string filePath)
     {
         filePath = EnsureValidExtension(filePath);
 
         var lines = File.ReadAllLines(filePath);
 
+        Customer customer = null;
         foreach (var line in lines)
         {
-            var parts = line.Split("|");
+            if (string.IsNullOrEmpty(line)) continue;
 
             //create customer objects
-            var customer = new Customer(parts);
+            customer = new Customer(line.Split("|"));
+            
+            // load account and transactions to associate them to customer
+            LoadAccount(customer);
+            LoadTransaction(customer.GetCustomerAccount);
 
             // add customer to bank list
             if (!IsContainCustomer(customer)) bank.AddCustomers(customer);
         }
 
-        bool IsContainCustomer(Customer customer)
+        return customer;
+
+        bool IsContainCustomer(Customer cus)
         {
-            return bank.GetCustomersList.Any(c => c.GetCustomerId == customer.GetCustomerId);
+            return bank.GetCustomersList.Any(c => c.GetCustomerId == cus.GetCustomerId);
         }
     }
 
@@ -280,7 +234,7 @@ public static class ObjectCreator
     {
         filePath = EnsureValidExtension(filePath);
 
-        StreamWriter writer = new StreamWriter(filePath);
+        var writer = new StreamWriter(filePath);
 
         using (writer)
         {
@@ -288,29 +242,23 @@ public static class ObjectCreator
         }
     }
 
-    public static void LoadBank(ConsoleInterface @interface, string filePath)
+    public static void LoadBank(Bank bank, string filePath)
     {
         filePath = EnsureValidExtension(filePath);
-        
-        // create a bank object
-        Bank bank = new Bank();
-        
+
         // read the file and split by line
-        string fileContent = File.ReadAllText(filePath);
-        string[] lines = fileContent.Split(Environment.NewLine);
-        
+        var fileContent = File.ReadAllText(filePath);
+        var lines = fileContent.Split(Environment.NewLine);
+
         // iterate each line
-        foreach (string line in lines)
+        foreach (var line in lines)
         {
             // skip empty line
             if (string.IsNullOrEmpty(line)) continue;
-            
-            // Create Customer object
-            string[] customerData = line.Split("|");
-            Customer customer = new Customer(customerData);
-            
-            // populate the bank with the customers objects
-            bank.AddCustomers(customer);
+
+            // call the LoadCustomer method
+            Customer customer = LoadCustomer(bank, filePath);
         }
+        
     }
 }

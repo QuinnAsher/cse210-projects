@@ -8,8 +8,9 @@ public abstract class Account
     protected DateTime _creationDAte;
     protected List<Transaction> _transactionsHistory;
     protected string _accountEmail;
+    protected string _foreignKey;
 
-    protected Account(string accountHolder, long accountNumber, string accountEmail)
+    protected Account(string accountHolder, long accountNumber, string accountEmail, string foreignKey)
     {
         _accountNumber = accountNumber;
         _accountHolder = accountHolder;
@@ -17,6 +18,7 @@ public abstract class Account
         _accountEmail = accountEmail;
         _transactionsHistory = new List<Transaction>();
         _creationDAte = DateTime.Now;
+        _foreignKey = foreignKey;
     }
 
     protected Account(string[] textDAta)
@@ -26,11 +28,13 @@ public abstract class Account
         _accountBalance = decimal.Parse(textDAta[2]);
         _accountEmail = textDAta[3];
         _creationDAte = DateTime.Parse(textDAta[4]);
+        _foreignKey = textDAta[5];
         _transactionsHistory = new List<Transaction>();
     }
 
     // Account class properties for getting data
     public string GetEmail => _accountEmail;
+    public string GetForeignKey => _foreignKey;
 
     public string SetEmail
     {
@@ -89,14 +93,14 @@ public abstract class Account
             try
             {
                 _accountBalance += amount;
-                Transaction transaction = new SingleCrTransaction(amount, _accountNumber, _accountBalance, "Deposit");
+                Transaction transaction = new SingleCrTransaction(amount, _accountNumber, _accountBalance, "Deposit", _accountNumber);
                 _transactionsHistory.Add(transaction);
 
                 //send an email
                 SendAlert(transaction, "quinTekc", "Deposit Alert");
 
                 DepositCharge(amount);
-                Console.ReadLine();
+                // Console.ReadLine();
                 //TODO: use the TransactionAlert method to send an email alert to the holder
             }
             catch (Exception e)
@@ -154,9 +158,9 @@ public abstract class Account
 
                 Transaction drTransaction =
                     new MultipleDrTransaction(amount, GetAccountNumber, _accountBalance, "Transfer",
-                        receiverAccount.GetAccountHolder);
+                        receiverAccount.GetAccountHolder, _accountNumber);
                 SendAlert(drTransaction, "quinTekc", "Transfer Charge");
-                
+
                 AddTransaction(drTransaction);
                 TransferCharge(amount);
 
@@ -164,7 +168,7 @@ public abstract class Account
                     new MultipleCrTransaction(amount, receiverAccount.GetAccountNumber,
                         receiverAccount.GetAccountBalance, "Transfer", GetAccountHolder);
                 SendAlert(crTransaction, "quinTekc", "Transfer Charge");
-                
+
                 receiverAccount.AddTransaction(crTransaction);
                 receiverAccount.TransferCharge(amount);
             }
@@ -262,7 +266,6 @@ public abstract class Account
             _accountBalance -= 1;
             Transaction transaction =
                 new SingleDrTransaction(1m, _accountNumber, _accountBalance, "Withdrawal Charge");
-            _transactionsHistory.Add(transaction);
             SendAlert(transaction, "quinTekc", "Withdrawal Charge Alert");
         }
 

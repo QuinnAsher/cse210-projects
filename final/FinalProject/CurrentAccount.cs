@@ -5,7 +5,9 @@ public class CurrentAccount : Account
     private readonly decimal _overdraftLimit;
     private readonly decimal _paymentInterst;
 
-    public CurrentAccount(string accountHolder, long accountNumber, string accountEmail) : base(accountHolder, accountNumber, accountEmail)
+    public CurrentAccount(string accountHolder, long accountNumber, string accountEmail, string foreignKey) : base(
+        accountHolder,
+        accountNumber, accountEmail, foreignKey)
     {
         _overdraftLimit = 0.2m;
         _paymentInterst = 0.1m;
@@ -18,7 +20,8 @@ public class CurrentAccount : Account
 
     public override string GetStringRepresentation()
     {
-        return $"{nameof(CurrentAccount)}+{_accountHolder}|{_accountNumber}|{_accountBalance}|{_accountEmail}|{_creationDAte}";
+        return
+            $"{nameof(CurrentAccount)}+{_accountHolder}|{_accountNumber}|{_accountBalance}|{_accountEmail}|{_creationDAte}|{_foreignKey}";
     }
 
     private decimal CalculateOverdraftLimit()
@@ -41,7 +44,6 @@ public class CurrentAccount : Account
                     new SingleDrTransaction(amount, GetAccountNumber, GetAccountBalance, "Withdrawal");
                 _transactionsHistory.Add(transaction);
                 WithdrawalCharge(amount);
-                
             }
 
             else if (amount <= GetAccountBalance + CalculateOverdraftLimit())
@@ -59,7 +61,7 @@ public class CurrentAccount : Account
                 var overdraft = CalculateOverdraftLimit() * _paymentInterst;
 
                 Transaction overdraftTransaction =
-                    new SingleCrTransaction(amount, GetAccountNumber, GetAccountBalance, "Overdraft Charge");
+                    new SingleCrTransaction(amount, GetAccountNumber, GetAccountBalance, "Overdraft Charge", _accountNumber);
                 _transactionsHistory.Add(overdraftTransaction);
             }
 
@@ -91,19 +93,19 @@ public class CurrentAccount : Account
 
 
                 Transaction drTransaction =
-                    new MultipleDrTransaction(amount, GetAccountNumber, _accountBalance, "Transfer",
-                        receiverAccount.GetAccountHolder);
+                    new MultipleDrTransaction(amount, GetAccountNumber, _accountBalance, nameof(Transfer),
+                        receiverAccount.GetAccountHolder, _accountNumber);
                 AddTransaction(drTransaction);
                 SendAlert(drTransaction, "quinTekc", "Deposit Charge Alert");
-                
+
                 TransferCharge(amount);
 
                 Transaction crTransaction =
                     new MultipleCrTransaction(amount, receiverAccount.GetAccountNumber,
-                        receiverAccount.GetAccountBalance, "Transfer", GetAccountHolder);
+                        receiverAccount.GetAccountBalance, nameof(Transfer), GetAccountHolder);
                 receiverAccount.AddTransaction(crTransaction);
                 SendAlert(crTransaction, "quinTekc", "Deposit Charge Alert");
-                
+
                 receiverAccount.TransferCharge(amount);
             }
 
