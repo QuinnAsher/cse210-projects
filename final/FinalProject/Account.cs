@@ -36,17 +36,18 @@ public abstract class Account
     {
         set => _accountEmail = value;
     }
+
     public decimal GetAccountBalance => _accountBalance;
     public string GetAccountHolder => _accountHolder;
     public long GetAccountNumber => _accountNumber;
     public List<Transaction> GetTransactionHistory => _transactionsHistory;
     public DateTime GetCreationDateTime => _creationDAte;
 
-    public void SendAlert(Transaction transaction, string senderName, string subject)
+    public async void SendAlert(Transaction transaction, string senderName, string subject)
     {
-        EmailMaker alert= new EmailMaker("quintekc@gmail.com", _accountEmail, subject,
+        var alert = new EmailMaker("quintekc@gmail.com", _accountEmail, subject,
             transaction.GetHtmlRepresentation(), "smtp.gmail.com", 587, "hovqwgdwhjasersb");
-        alert.SendMail(senderName, _accountHolder);
+        await alert.SendMail(senderName, _accountHolder);
     }
 
     public abstract string GetStringRepresentation();
@@ -90,10 +91,10 @@ public abstract class Account
                 _accountBalance += amount;
                 Transaction transaction = new SingleCrTransaction(amount, _accountNumber, _accountBalance, "Deposit");
                 _transactionsHistory.Add(transaction);
-                
+
                 //send an email
                 SendAlert(transaction, "quinTekc", "Deposit Alert");
-                
+
                 DepositCharge(amount);
                 Console.ReadLine();
                 //TODO: use the TransactionAlert method to send an email alert to the holder
@@ -118,7 +119,8 @@ public abstract class Account
                 _accountBalance -= amount;
 
 
-                Transaction transaction = new SingleDrTransaction(amount, _accountNumber, _accountBalance, "Withdrawal");
+                Transaction transaction =
+                    new SingleDrTransaction(amount, _accountNumber, _accountBalance, "Withdrawal");
                 _transactionsHistory.Add(transaction);
                 WithdrawalCharge(amount);
                 //TODO: use the TransactionAlert method to send an email alert to the holder
@@ -153,12 +155,16 @@ public abstract class Account
                 Transaction drTransaction =
                     new MultipleDrTransaction(amount, GetAccountNumber, _accountBalance, "Transfer",
                         receiverAccount.GetAccountHolder);
+                SendAlert(drTransaction, "quinTekc", "Transfer Charge");
+                
                 AddTransaction(drTransaction);
                 TransferCharge(amount);
 
                 Transaction crTransaction =
                     new MultipleCrTransaction(amount, receiverAccount.GetAccountNumber,
                         receiverAccount.GetAccountBalance, "Transfer", GetAccountHolder);
+                SendAlert(crTransaction, "quinTekc", "Transfer Charge");
+                
                 receiverAccount.AddTransaction(crTransaction);
                 receiverAccount.TransferCharge(amount);
             }

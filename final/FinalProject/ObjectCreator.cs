@@ -179,7 +179,7 @@ public static class ObjectCreator
 
         using (writer)
         {
-            foreach (var account in customer.GetCustomerAccount) writer.WriteLine(account.GetStringRepresentation());
+            writer.WriteLine(customer.GetCustomerAccount.GetStringRepresentation());
         }
     }
 
@@ -199,21 +199,12 @@ public static class ObjectCreator
 
             // Create an account object
             var account = CreateAccount(accountType, accountDetails);
-            if (!IsContainAccount(account))
-            {
-                customer.GetCustomerAccount.Add(account);
-            }
 
-            // customer.GetCustomerAccount.Add(account);
+            // This associates an account with a customer
+            customer.SetAccount = account;
         }
 
         return;
-
-        bool IsContainAccount(Account account)
-        {
-            return customer.GetCustomerAccount.Any(a => a.GetAccountNumber == account.GetAccountNumber);
-        }
-
 
         Account CreateAccount(string accountType, string accountDetails)
         {
@@ -248,7 +239,7 @@ public static class ObjectCreator
     }
 
 
-    public static void SaveCustomer(Bank bank, string filePath)
+    public static void SaveCustomer(Bank bank, string customerId, string filePath)
     {
         filePath = EnsureValidExtension(filePath);
 
@@ -256,45 +247,33 @@ public static class ObjectCreator
 
         using (writer)
         {
-            foreach (Customer c in bank.GetCustomers)
+            var customer = bank.GetCustomersList.FirstOrDefault(c => c.GetCustomerId == customerId);
             {
-                writer.WriteLine(c.GetStringRepresentation);
+                if (customer != null) writer.WriteLine(customer.GetStringRepresentation);
             }
         }
     }
 
-    public static void LoadCustomer(Bank bank,string filePath)
+    public static void LoadCustomer(Bank bank, string filePath)
     {
-         filePath = EnsureValidExtension(filePath);
+        filePath = EnsureValidExtension(filePath);
 
-         string[] lines = File.ReadAllLines(filePath);
+        var lines = File.ReadAllLines(filePath);
 
-         foreach (string line in lines)
-         {
-             string[] parts = line.Split("|");
-             
-             //create customer objects
-             Customer customer = new Customer(parts);
-             
-             // add customer to bank list
-             bank.AddCustomers(customer);
-             
-         }
+        foreach (var line in lines)
+        {
+            var parts = line.Split("|");
+
+            //create customer objects
+            var customer = new Customer(parts);
+
+            // add customer to bank list
+            if (!IsContainCustomer(customer)) bank.AddCustomers(customer);
+        }
+
+        bool IsContainCustomer(Customer customer)
+        {
+            return bank.GetCustomersList.Any(c => c.GetCustomerId == customer.GetCustomerId);
+        }
     }
-
-    // public static void SaveCss(string filePath)
-    // {
-    //     StreamWriter writer = new StreamWriter(filePath);
-    //
-    //     using (writer)
-    //     {
-    //         writer.WriteLine(
-    //             ".t-msg {\n    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);\n    background-color: #f2f2f2;\n    padding: 2rem;\n    display: flex;\n    width: 30rem;\n    height: 30rem;\n    justify-content: center;\n    align-items: center;\n    border-radius: 1rem;\n}");
-    //     }
-    // }
-    //
-    // public static void LoadCss(string filePath)
-    // {
-    //     string[] lines = File.ReadAllLines(filePath);
-    // }
 }

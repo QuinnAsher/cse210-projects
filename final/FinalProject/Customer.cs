@@ -12,11 +12,11 @@ public class Customer
     private string _emailAddress;
     private string _phoneNumber;
     private DateTime _dateOfBirth;
-    private List<Account> _accountList;
-    private Bank _bank;
+    private string _accontType;
+    private Account _account;
 
     public Customer(string customerName, string password, string address, string emailAddress, string phoneNumber,
-        DateTime dateOfBirth)
+        DateTime dateOfBirth, string accountType)
     {
         _customerId = GenerateId();
         _accountNumber = GenerateAccountNumber();
@@ -26,8 +26,8 @@ public class Customer
         _emailAddress = emailAddress;
         _phoneNumber = phoneNumber;
         _dateOfBirth = dateOfBirth;
-        _accountList = new List<Account>();
-        _bank = new Bank();
+        _accontType = accountType;
+        _account = CreateAccount(_accontType);
     }
 
     public Customer(string[] textData)
@@ -40,13 +40,19 @@ public class Customer
         _emailAddress = textData[5];
         _phoneNumber = textData[6];
         _dateOfBirth = DateTime.Parse(textData[7]);
-        _accountList = new List<Account>();
-        _bank = new Bank();
+        _account = CreateAccount(textData[8]);
     }
 
 
     // Customer getters
     public string GetCustomerId => _customerId;
+
+    public Account SetAccount
+    {
+        set => _account = value;
+    }
+
+    public bool HasAccount => _account != null;
     public string GetCustomerName => _customerName;
     public long GetAccountNumber => _accountNumber;
     public string GetHashedPassword => HashPassword(_password);
@@ -54,63 +60,54 @@ public class Customer
     public string GetPhoneNumber => _phoneNumber;
     public DateTime GetDateOfBirth => _dateOfBirth;
 
-    public Account GetAccount(int index)
-    {
-        return _accountList[index];
-    }
+    // public Account GetAccount(int index)
+    // {
+    //     return _accountList[index];
+    // }
 
-    public List<Account> GetCustomerAccount => _accountList;
+    public Account GetCustomerAccount => _account;
 
     public string GetStringRepresentation =>
-        $"{_customerId}|{_customerName}|{_accountNumber}|{_password}|{_address}|{_emailAddress}|{_phoneNumber}|{_dateOfBirth}";
+        $"{_customerId}|{_customerName}|{_accountNumber}|{_password}|{_address}|{_emailAddress}|{_phoneNumber}|{_dateOfBirth}|{_accontType}";
 
-    
-    public void CreateAccount(string accountType)
+
+    private Account CreateAccount(string accountType)
     {
         switch (accountType)
         {
             case "savings":
 
-                SavingsAccount savingsAccount = (new SavingsAccount(_customerName, _accountNumber, _emailAddress));
-                _accountList.Add(savingsAccount);
-                break;
+                return new SavingsAccount(_customerName, _accountNumber, _emailAddress);
+
 
             case "current":
-                CurrentAccount currentAccount = (new CurrentAccount(_customerName, _accountNumber, _emailAddress));
-                _accountList.Add(currentAccount);
-                break;
+                return new CurrentAccount(_customerName, _accountNumber, _emailAddress);
         }
+
+        return null;
     }
 
 
-    public void DeleteAccount(int index, string password)
-    {
-        // Validate password before proceeding
-        if (!ValidatePassword(password)) throw new InvalidPasswordException("Invalid password provided.");
-
-        // Check if the index is within valid range
-        if (index < 0 || index >= _accountList.Count)
-            throw new IndexOutOfRangeException("Account index is out of range.");
-
-        // Check account balance before deleting
-        if (_accountList[index].GetAccountBalance < 0)
-            throw new NegativeBalanceException("Account has a negative balance and cannot be deleted.");
-        if (_accountList[index].GetAccountBalance > 0)
-            throw new PositiveBalanceException(
-                "Account has a positive balance and cannot be deleted. Please withdraw remaining funds before deleting.");
-
-        // Remove account from the list
-        _accountList.RemoveAt(index);
-
-        Console.WriteLine("Account deleted successfully.");
-    }
+    // public void DeleteAccount(int index, string password)
+    // {
+    //     // Validate password before proceeding
+    //     if (!ValidatePassword(password)) throw new InvalidPasswordException("Invalid password provided.");
+    //
+    //     // Check account balance before deleting
+    //     if (_account.GetAccountBalance < 0)
+    //         throw new NegativeBalanceException("Account has a negative balance and cannot be deleted.");
+    //     if (_account.GetAccountBalance > 0)
+    //         throw new PositiveBalanceException(
+    //             "Account has a positive balance and cannot be deleted. Please withdraw remaining funds before deleting.");
+    //
+    //     // Remove account from the list
+    //     Console.WriteLine("Account deleted successfully.");
+    // }
 
     private bool ValidatePassword(string password)
     {
         return HashPassword(password) == HashPassword(_password);
     }
-
-    
 
 
     // methods for updating some customer info
@@ -162,8 +159,6 @@ public class Customer
     }
     /******************************************************************************************************************/
 
-    
-    
 
     // Custom Exceptions
     /******************************************************************************************************************/
