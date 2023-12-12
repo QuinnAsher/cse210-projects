@@ -1,4 +1,5 @@
-﻿using static FinalProject.Generator;
+﻿// using static FinalProject.PasswordManager;
+using static FinalProject.Generator;
 
 namespace FinalProject;
 
@@ -63,7 +64,7 @@ public class Customer
     public bool HasAccount => _account != null;
     public string GetCustomerName => _customerName;
     public long GetAccountNumber => _accountNumber;
-    public string GetHashedPassword => HashPassword(_password);
+    public string GetHashedPassword => _password;
     public string GetEmailAddress => _emailAddress;
     public string GetPhoneNumber => _phoneNumber;
     public DateTime GetDateOfBirth => _dateOfBirth;

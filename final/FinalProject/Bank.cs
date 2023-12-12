@@ -36,10 +36,21 @@ public class Bank
                 var account = customer.GetCustomerAccount;
                 if (account.GetAccountNumber == accountNumber) return account;
             }
-
+            else
+            {
+                throw new InvalidAccountException("Account with provided number does not exit");
+            }
         return null;
     }
 
+    public Customer GetCustomerByUserName(string userName)
+    {
+        foreach (Customer customer in _customersList)
+        {
+            return _customersList.FirstOrDefault(c => customer.GetUserName == userName);
+        }
+        return null;
+    }
 
     public Account FindCustomerByName(string holderName)
     {

@@ -57,7 +57,7 @@ public class SavingsAccount : Account
 
     public override void AddInterest()
     {
-        // make a copy of the transaction history to avoid modification
+        // made a copy of the transaction history to avoid modification
         // while iteration
 
         var tempTransactions = new List<Transaction>(_transactionsHistory);
@@ -77,8 +77,8 @@ public class SavingsAccount : Account
                 Transaction interestTransaction =
                     new SingleCrTransaction(cachedInterest, _accountNumber, _accountBalance, "Earned Interest", _accountNumber);
                 _transactionsHistory.Add(interestTransaction);
+                SendAlert(interestTransaction, "quinTekc", "Earned Interest");
             }
-
             Console.WriteLine(cachedInterest > 0 ? "Interest Added successfully" : "No interest added.");
         }
     }

@@ -11,9 +11,21 @@ public class Program
         // create a bank object
         Bank bank = new Bank();
         LoadBank(bank, "customers_data");
+
+        // Account danielAccount = bank.GetAccountByNumber(4498921972);
+        // Account janeAccount = bank.GetAccountByNumber(408965971);
+        
+        // janeAccount.Deposit(20000);
+        // janeAccount.Withdraw(5000);
+        //
+        // janeAccount.Transfer(danielAccount, 500);
+        // Console.ReadLine();
+        
+        
+        
         foreach (Customer c in bank.GetCustomersList)
         {
-            Console.WriteLine(c.GetCustomerName);
+            Console.WriteLine(c.GetCustomerAccount.GetAccountBalance);
         }
         // an account by number
         // Account obadiah = bank.GetAccountByNumber(9388145530);
@@ -38,11 +50,13 @@ public class Program
         
         
 
-        var consoleInterface = new ConsoleInterface();
+        var consoleInterface = new UserInterface(bank);
         try
         {
             Console.WriteLine(consoleInterface.GetUserName);
             // consoleInterface.CreateCustomer();
+            consoleInterface.Login("divine396", "Chongf1lawas");
+            consoleInterface.PerformTransaction();
             Console.WriteLine(consoleInterface.GetUserName);
         }
 

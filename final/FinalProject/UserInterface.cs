@@ -6,23 +6,25 @@ namespace FinalProject;
 
 using static Generator;
 using static ObjectCreator;
-using static PasswordManager;
+// using static PasswordManager;
 
-public class ConsoleInterface
+public class UserInterface
 {
     private int _otp;
     private int _otpToCompareTo;
     private string _userName;
     private Bank _bank;
+    private bool _isLoggedIn;
 
-    public ConsoleInterface()
+    public UserInterface(Bank bank)
     {
         _otp = GenerateOtp();
         _otpToCompareTo = _otp;
-        _bank = new Bank();
+        _bank = bank;
     }
 
     public string GetUserName => _userName;
+    public bool GetLoginStatus => _isLoggedIn;
 
     public void CreateCustomer()
     {
@@ -58,7 +60,7 @@ public class ConsoleInterface
 
         while (!isValidOtp && retries > 0)
         {
-            Console.WriteLine($"Enter the OTP sent to your email address: debugging {_otp}");
+            Console.WriteLine($"Enter the OTP sent to your email address:");
             try
             {
                 var enteredOtp = int.Parse(Console.ReadLine());
@@ -122,7 +124,7 @@ public class ConsoleInterface
     // helper functions to aid in account creations
     /**************************************************************************************************************/
 
-    private string EmailBody(string name, int otp)
+    private static string EmailBody(string name, int otp)
     {
         // Create a StringBuilder object to build the HTML string
         var sb = new StringBuilder();
@@ -130,7 +132,7 @@ public class ConsoleInterface
         // Append the HTML elements to the StringBuilder
         sb.Append("<div style=\"width: 1300px; display: flex; align-items: center; justify-content: center;\">");
         sb.Append(
-            "<div style=\"box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); padding: 2rem; width: 20rem; height: 20rem;\">");
+            "<div style=\"box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); margin-inline:auto; padding: 2rem; width: 20rem; height: 20rem;\">");
         sb.Append("<div style=\"line-height: 1.5;\">");
         sb.Append($"<p style=\"margin-top: 2rem\">Dear {name}</p>");
         sb.Append(
@@ -177,32 +179,22 @@ public class ConsoleInterface
 
     private bool PasswordValidate(string password)
     {
-        if (password.Length < 10)
+        if (password.Length < 8)
         {
-            Console.WriteLine("Password must be at least 10 characters long.");
+            Console.WriteLine("Password must be at least 8 characters long.");
             return false;
         }
 
-        var hasNumber = false;
+        var hasNumber = password.Any(char.IsDigit);
 
-        foreach (var t in password)
-            if (char.IsDigit(t))
-            {
-                hasNumber = true;
-                break;
-            }
+        if (hasNumber) return true;
+        Console.WriteLine("Password must contain at least one number.");
+        return false;
 
-        if (!hasNumber)
-        {
-            Console.WriteLine("Password must contain at least one number.");
-            return false;
-        }
-
-        return true;
     }
 
 
-    private string GetValidConfirmationPassword(string password)
+    private static string GetValidConfirmationPassword(string password)
     {
         string confirmPassword;
         do
@@ -241,7 +233,7 @@ public class ConsoleInterface
         return phoneNumber;
     }
 
-    private DateTime GetValidDateOfBirth()
+    private static DateTime GetValidDateOfBirth()
     {
         DateTime dateOfBirth;
         string dateOfBirthStr;
@@ -262,7 +254,7 @@ public class ConsoleInterface
     }
 
 
-    private int GetValidAccountType()
+    private static int GetValidAccountType()
     {
         int accountType;
         do
@@ -275,7 +267,7 @@ public class ConsoleInterface
     }
 
 
-    private bool IsValidEmail(string emailAddress)
+    private  static bool IsValidEmail(string emailAddress)
     {
         try
         {
@@ -289,7 +281,7 @@ public class ConsoleInterface
     }
 
 
-    private bool IsValidPhoneNumber(string phoneNumber)
+    private static bool IsValidPhoneNumber(string phoneNumber)
     {
         if (phoneNumber.Length < 10)
         {
@@ -321,16 +313,209 @@ public class ConsoleInterface
     /**************************************************************************************************************/
 
     /**************************************************************************************************************/
-    // Login section
+    // Login and Logoutsection
     /**************************************************************************************************************/
 
     public void Login(string userName, string password)
     {
-        // communicate with the data base to get user name and password
-        // LoadCustomer(_bank, "divine672");
+        bool VerifyUserCredentials()
+        {
+            Customer customer = _bank.GetCustomerByUserName(userName);
+
+            if (customer == null)
+            {
+                Console.WriteLine("Invalid username or password.");
+                return false;
+            }
+
+            bool isPasswordMatch = customer.GetHashedPassword == HashPassword(password);
+
+            if (!isPasswordMatch)
+            {
+                Console.WriteLine("Invalid username or password.");
+                return false;
+            }
+
+            return true;
+        }
+
+        // set the username
+        _userName = userName;
+        _isLoggedIn = VerifyUserCredentials();
+    }
+
+
+    public void LogOut()
+    {
+        if (_isLoggedIn)
+        {
+            _isLoggedIn = false;
+        }
     }
 
     /**************************************************************************************************************/
-    // Login section
+    // Login and Logout section
+    /**************************************************************************************************************/
+    
+    
+    /**************************************************************************************************************/
+    // Perform Transactions Sections
+    /**************************************************************************************************************/
+
+   public void PerformTransaction()
+{
+    if (_isLoggedIn)
+    {
+        Console.WriteLine("Enter a number that corresponds with the Transaction you want to perform:");
+        Console.WriteLine("1.   Deposit");
+        Console.WriteLine("2.   Withdrawal");
+        Console.WriteLine("3.   Transfer");
+        Console.Write(">");
+
+        int userAction;
+        bool validInput = int.TryParse(Console.ReadLine(), out userAction);
+
+        while (!validInput)
+        {
+            Console.WriteLine("Invalid input. Please enter a valid number.");
+            Console.Write(">");
+            validInput = int.TryParse(Console.ReadLine(), out userAction);
+        }
+
+        // Retrieve the current user account
+        Account account = _bank.GetCustomerByUserName(_userName).GetCustomerAccount;
+
+        switch (userAction)
+        {
+            case 1:
+                try
+                {
+                    Console.Write("Enter deposit amount: ");
+                    decimal amount = decimal.Parse(Console.ReadLine());
+                    account.Deposit(amount);
+                    Console.WriteLine($"Successfully deposited {amount}.");
+                    SaveTransaction(account);
+                }
+                catch (Account.InsufficientFundsException e)
+                {
+                    Console.WriteLine(e.Message);
+                    HandleError(account);
+                }
+                catch (Account.InvalidDepositAmountException e)
+                {
+                    Console.WriteLine(e.Message);
+                    HandleError(account);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine($"An unexpected error occurred: {e.Message}");
+                    HandleError(account);
+                }
+                break;
+            case 2:
+                try
+                {
+                    Console.Write("Enter withdrawal amount: ");
+                    decimal amount = decimal.Parse(Console.ReadLine());
+                    account.Withdraw(amount);
+                    SaveTransaction(account);
+                    Console.WriteLine($"Successfully withdrawn {amount}.");
+                }
+                catch (Account.InsufficientFundsException e)
+                {
+                    Console.WriteLine(e.Message);
+                    HandleError(account);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine($"An unexpected error occurred: {e.Message}");
+                    HandleError(account);
+                }
+                break;
+            case 3:
+                try
+                {
+                    Console.Write("Enter recipient account number: ");
+                    long recipientAccountNumber = long.Parse(Console.ReadLine());
+
+                    Account recipientAccount =_bank.GetAccountByNumber(recipientAccountNumber);
+                    if (recipientAccount == null)
+                    {
+                        Console.WriteLine("Account not found.");
+                        HandleError(account);
+                    }
+                    else
+                    {
+                        Console.Write("Enter transfer amount: ");
+                        decimal amount = decimal.Parse(Console.ReadLine());
+
+                        account.Transfer(recipientAccount, amount);
+                        SaveTransaction(account);
+                        SaveTransaction(recipientAccount);
+                        Console.WriteLine($"Successfully transferred {amount} to account {recipientAccountNumber}.");
+                    }
+                }
+                catch (Account.InsufficientFundsException e)
+                {
+                    Console.WriteLine(e.Message);
+                    HandleError(account);
+                }
+                catch (Account.InvalidTransferAmountException e)
+                {
+                    Console.WriteLine(e.Message);
+                    HandleError(account);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine($"An unexpected error occurred: {e.Message}");
+                    HandleError(account);
+                }
+                break;
+            default:
+                Console.WriteLine("Invalid option selected.");
+                break;
+        }
+    }
+    
+    else
+    {
+        Console.WriteLine("You are not authorized to access this section.");
+    }
+}
+
+private void HandleError(Account currentAccount)
+{
+    Console.WriteLine("Would you like to:");
+    Console.WriteLine("1. Try again");
+    Console.WriteLine("2. Go back to main menu");
+    Console.WriteLine("3. Quit");
+    Console.Write(">");
+
+    int userChoice;
+    bool validChoice = int.TryParse(Console.ReadLine(), out userChoice);
+
+    while (!validChoice || userChoice < 1 || userChoice > 3)
+    {
+        Console.WriteLine("Invalid input. Please enter a number from 1 to 3.");
+        Console.Write(">");
+        validChoice = int.TryParse(Console.ReadLine(), out userChoice);
+    }
+
+    switch (userChoice)
+    {
+        case 1:
+            PerformTransaction();
+            break;
+        case 2:
+            // Display main menu
+            break;
+        case 3:
+            // Quit the
+            break;
+    }
+}
+ 
+    /**************************************************************************************************************/
+    // Perform Transaction Sections
     /**************************************************************************************************************/
 }

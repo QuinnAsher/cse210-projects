@@ -185,14 +185,14 @@ public abstract class Account
         }
     }
 
-    protected class InsufficientFundsException : Exception
+    public class InsufficientFundsException : Exception
     {
         public InsufficientFundsException(string message) : base(message)
         {
         }
     }
 
-    private class InvalidDepositAmountException : Exception
+    public class InvalidDepositAmountException : Exception
     {
         public InvalidDepositAmountException(string message) : base(message)
         {
@@ -200,7 +200,7 @@ public abstract class Account
     }
 
 
-    private class InvalidTransferAmountException : Exception
+    public class InvalidTransferAmountException : Exception
     {
         public InvalidTransferAmountException(string message) : base(message)
         {

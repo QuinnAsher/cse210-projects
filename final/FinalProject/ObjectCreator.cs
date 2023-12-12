@@ -22,10 +22,13 @@ public static class ObjectCreator
             foreach (var t in account.GetTransactionHistory)
             {
                 bool transactionExit = File.ReadAllLines(filePath).Any(line => line.Contains(t.GetTransactionId));
-                if (!transactionExit) continue; 
+                if (transactionExit) continue; 
                 writer.WriteLine(t.GetStringRepresentation());
             }
         }
+        
+        // save the account af
+        SaveAccount(account);
     }
 
     private static void LoadTransaction(Account account)
@@ -45,7 +48,7 @@ public static class ObjectCreator
             var transaction = CreateTransaction(transactionType, transactionDetails);
             
             // get the foreign key to associate an account with a transaction
-            if (!IsForeignKeyMatch(transaction) && !IsContainTransaction(transaction))
+            if (IsForeignKeyMatch(transaction) && !IsContainTransaction(transaction))
             {
                 // load the transactions to the associated account
                 account.AddTransaction(transaction);
@@ -110,13 +113,30 @@ public static class ObjectCreator
 
     private static void SaveAccount(Account account)
     {
-        var filePath = EnsureValidExtension("accounts_data");
-
-        var writer = new StreamWriter(filePath, true);
-
-        using (writer)
+        try
         {
-            writer.WriteLine(account.GetStringRepresentation());
+            var filePath = EnsureValidExtension("accounts_data");
+            var lines = File.ReadLines(filePath).ToList();
+            bool updated = false;
+            
+            for (int i = 0; i < lines.Count; i++)
+            {
+                if (lines.Contains(account.GetStringRepresentation()))
+                {
+                    lines[i] = account.GetStringRepresentation();
+                    updated = true;
+                }
+            }
+
+            if (!updated)
+            {
+                lines.Add(account.GetStringRepresentation());
+            }
+
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e.Message);
         }
     }
 
@@ -191,15 +211,12 @@ public static class ObjectCreator
             if (customer != null)
             {
                 writer.WriteLine(customer.GetStringRepresentation);
-                
-                // save transaction and account
-                SaveAccount(customer.GetCustomerAccount);
-                SaveTransaction(customer.GetCustomerAccount);
+
             }
         }
     }
 
-    private static Customer LoadCustomer(Bank bank, string filePath)
+    public static Customer LoadCustomer(Bank bank, string filePath)
     {
         filePath = EnsureValidExtension(filePath);
 
