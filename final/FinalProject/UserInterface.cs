@@ -6,6 +6,7 @@ namespace FinalProject;
 
 using static Generator;
 using static ObjectCreator;
+
 // using static PasswordManager;
 
 public class UserInterface
@@ -60,7 +61,7 @@ public class UserInterface
 
         while (!isValidOtp && retries > 0)
         {
-            Console.WriteLine($"Enter the OTP sent to your email address:");
+            Console.WriteLine($"Enter the OTP sent to your email address: for debugging: {_otp}");
             try
             {
                 var enteredOtp = int.Parse(Console.ReadLine());
@@ -94,7 +95,7 @@ public class UserInterface
             _bank.AddCustomers(customer);
 
             // now save this customer to the bank Data base
-            SaveCustomer(_bank, customer.GetCustomerId, "customers_data");
+            SaveCustomer(_bank, "customers_data");
 
             Console.WriteLine($"Account created successfully! Account type: {accType.ToUpper()} ACCOUNT");
 
@@ -190,7 +191,6 @@ public class UserInterface
         if (hasNumber) return true;
         Console.WriteLine("Password must contain at least one number.");
         return false;
-
     }
 
 
@@ -267,7 +267,7 @@ public class UserInterface
     }
 
 
-    private  static bool IsValidEmail(string emailAddress)
+    private static bool IsValidEmail(string emailAddress)
     {
         try
         {
@@ -318,204 +318,215 @@ public class UserInterface
 
     public void Login(string userName, string password)
     {
-        bool VerifyUserCredentials()
-        {
-            Customer customer = _bank.GetCustomerByUserName(userName);
-
-            if (customer == null)
-            {
-                Console.WriteLine("Invalid username or password.");
-                return false;
-            }
-
-            bool isPasswordMatch = customer.GetHashedPassword == HashPassword(password);
-
-            if (!isPasswordMatch)
-            {
-                Console.WriteLine("Invalid username or password.");
-                return false;
-            }
-
-            return true;
-        }
-
         // set the username
         _userName = userName;
         _isLoggedIn = VerifyUserCredentials();
+        return;
+
+        bool VerifyUserCredentials()
+        {
+            var customer = _bank.GetCustomerByUserName(userName);
+
+            if (customer == null)
+            {
+                Console.WriteLine("The associated user name is found");
+                return false;
+            }
+
+            var isPasswordMatch = customer.GetHashedPassword == HashPassword(password);
+
+            if (isPasswordMatch) return true;
+            Console.WriteLine("Invalid Password");
+            return false;
+
+        }
     }
 
 
     public void LogOut()
     {
-        if (_isLoggedIn)
-        {
-            _isLoggedIn = false;
-        }
+        if (_isLoggedIn) _isLoggedIn = false;
     }
 
     /**************************************************************************************************************/
     // Login and Logout section
     /**************************************************************************************************************/
-    
-    
+
+
     /**************************************************************************************************************/
     // Perform Transactions Sections
     /**************************************************************************************************************/
 
-   public void PerformTransaction()
-{
-    if (_isLoggedIn)
+    public void PerformTransaction()
     {
-        Console.WriteLine("Enter a number that corresponds with the Transaction you want to perform:");
-        Console.WriteLine("1.   Deposit");
-        Console.WriteLine("2.   Withdrawal");
-        Console.WriteLine("3.   Transfer");
-        Console.Write(">");
-
-        int userAction;
-        bool validInput = int.TryParse(Console.ReadLine(), out userAction);
-
-        while (!validInput)
+        if (_isLoggedIn)
         {
-            Console.WriteLine("Invalid input. Please enter a valid number.");
-            Console.Write(">");
-            validInput = int.TryParse(Console.ReadLine(), out userAction);
-        }
+            Console.WriteLine("Enter a number that corresponds with the Transaction you want to perform:");
+            Console.WriteLine("1.   Deposit");
+            Console.WriteLine("2.   Withdrawal");
+            Console.WriteLine("3.   Transfer");
+            Console.Write("> ");
 
-        // Retrieve the current user account
-        Account account = _bank.GetCustomerByUserName(_userName).GetCustomerAccount;
+            int userAction;
+            var validInput = int.TryParse(Console.ReadLine(), out userAction);
 
-        switch (userAction)
-        {
-            case 1:
-                try
-                {
-                    Console.Write("Enter deposit amount: ");
-                    decimal amount = decimal.Parse(Console.ReadLine());
-                    account.Deposit(amount);
-                    Console.WriteLine($"Successfully deposited {amount}.");
-                    SaveTransaction(account);
-                }
-                catch (Account.InsufficientFundsException e)
-                {
-                    Console.WriteLine(e.Message);
-                    HandleError(account);
-                }
-                catch (Account.InvalidDepositAmountException e)
-                {
-                    Console.WriteLine(e.Message);
-                    HandleError(account);
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine($"An unexpected error occurred: {e.Message}");
-                    HandleError(account);
-                }
-                break;
-            case 2:
-                try
-                {
-                    Console.Write("Enter withdrawal amount: ");
-                    decimal amount = decimal.Parse(Console.ReadLine());
-                    account.Withdraw(amount);
-                    SaveTransaction(account);
-                    Console.WriteLine($"Successfully withdrawn {amount}.");
-                }
-                catch (Account.InsufficientFundsException e)
-                {
-                    Console.WriteLine(e.Message);
-                    HandleError(account);
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine($"An unexpected error occurred: {e.Message}");
-                    HandleError(account);
-                }
-                break;
-            case 3:
-                try
-                {
-                    Console.Write("Enter recipient account number: ");
-                    long recipientAccountNumber = long.Parse(Console.ReadLine());
+            while (!validInput)
+            {
+                Console.WriteLine("Invalid input. Please enter a valid number.");
+                Console.Write(">");
+                validInput = int.TryParse(Console.ReadLine(), out userAction);
+            }
 
-                    Account recipientAccount =_bank.GetAccountByNumber(recipientAccountNumber);
-                    if (recipientAccount == null)
+            // Retrieve the current user account
+            var account = _bank.GetCustomerByUserName(_userName).GetCustomerAccount;
+
+            switch (userAction)
+            {
+                case 1:
+                    try
                     {
-                        Console.WriteLine("Account not found.");
+                        Console.Write("Enter deposit amount: ");
+                        var amount = decimal.Parse(Console.ReadLine());
+                        account.Deposit(amount);
+                        Console.WriteLine($"Successfully deposited {amount}.");
+                        SaveAllAccounts(_bank);
+                        SaveAllTransactions(_bank);
+                    }
+                    catch (Account.InsufficientFundsException e)
+                    {
+                        Console.WriteLine(e.Message);
                         HandleError(account);
                     }
-                    else
+                    catch (Account.InvalidDepositAmountException e)
                     {
-                        Console.Write("Enter transfer amount: ");
-                        decimal amount = decimal.Parse(Console.ReadLine());
-
-                        account.Transfer(recipientAccount, amount);
-                        SaveTransaction(account);
-                        SaveTransaction(recipientAccount);
-                        Console.WriteLine($"Successfully transferred {amount} to account {recipientAccountNumber}.");
+                        Console.WriteLine(e.Message);
+                        HandleError(account);
                     }
-                }
-                catch (Account.InsufficientFundsException e)
-                {
-                    Console.WriteLine(e.Message);
-                    HandleError(account);
-                }
-                catch (Account.InvalidTransferAmountException e)
-                {
-                    Console.WriteLine(e.Message);
-                    HandleError(account);
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine($"An unexpected error occurred: {e.Message}");
-                    HandleError(account);
-                }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine($"An unexpected error occurred: {e.Message}");
+                        HandleError(account);
+                    }
+
+                    break;
+                case 2:
+                    try
+                    {
+                        Console.Write("Enter withdrawal amount: ");
+                        var amount = decimal.Parse(Console.ReadLine());
+                        account.Withdraw(amount);
+                        SaveAllAccounts(_bank);
+                        SaveAllTransactions(_bank);
+                        Console.WriteLine($"Successfully withdrawn {amount}.");
+                    }
+                    catch (Account.InsufficientFundsException e)
+                    {
+                        Console.WriteLine(e.Message);
+                        HandleError(account);
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine($"An unexpected error occurred: {e.Message}");
+                        HandleError(account);
+                    }
+
+                    break;
+                case 3:
+                    try
+                    {
+                        Console.Write("Enter recipient account number: ");
+                        var recipientAccountNumber = long.Parse(Console.ReadLine());
+
+                        var recipientAccount = _bank.GetAccountByNumber(recipientAccountNumber);
+                        if (recipientAccount == null)
+                        {
+                            Console.WriteLine("Account not found.");
+                            HandleError(account);
+                        }
+                        else
+                        {
+                            Console.Write("Enter transfer amount: ");
+                            var amount = decimal.Parse(Console.ReadLine());
+
+                            account.Transfer(recipientAccount, amount);
+                            // SaveAccount(_bank);
+                            SaveAllAccounts(_bank);
+                            // SaveAllTransactions(_bank);
+                            SaveAllTransactions(_bank);
+                            Console.WriteLine(
+                                $"Successfully transferred {amount} to account {recipientAccount.GetAccountHolder}.");
+                        }
+                    }
+                    catch (Account.InsufficientFundsException e)
+                    {
+                        Console.WriteLine(e.Message);
+                        HandleError(account);
+                    }
+                    catch (Account.InvalidTransferAmountException e)
+                    {
+                        Console.WriteLine(e.Message);
+                        HandleError(account);
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine($"An unexpected error occurred: {e.Message}");
+                        HandleError(account);
+                    }
+
+                    break;
+                default:
+                    Console.WriteLine("Invalid option selected.");
+                    break;
+            }
+        }
+
+        else
+        {
+            Console.WriteLine("You are not authorized to access this section.");
+        }
+    }
+
+    private void HandleError(Account currentAccount)
+    {
+        Console.WriteLine("Would you like to:");
+        Console.WriteLine("1. Try again");
+        Console.WriteLine("2. Go back to main menu");
+        Console.WriteLine("3. Quit");
+        Console.Write(">");
+
+        int userChoice;
+        var validChoice = int.TryParse(Console.ReadLine(), out userChoice);
+
+        while (!validChoice || userChoice < 1 || userChoice > 3)
+        {
+            Console.WriteLine("Invalid input. Please enter a number from 1 to 3.");
+            Console.Write(">");
+            validChoice = int.TryParse(Console.ReadLine(), out userChoice);
+        }
+
+        switch (userChoice)
+        {
+            case 1:
+                PerformTransaction();
                 break;
-            default:
-                Console.WriteLine("Invalid option selected.");
+            case 2:
+                // Display main menu
+                break;
+            case 3:
+                // Quit the
                 break;
         }
     }
-    
-    else
-    {
-        Console.WriteLine("You are not authorized to access this section.");
-    }
-}
 
-private void HandleError(Account currentAccount)
-{
-    Console.WriteLine("Would you like to:");
-    Console.WriteLine("1. Try again");
-    Console.WriteLine("2. Go back to main menu");
-    Console.WriteLine("3. Quit");
-    Console.Write(">");
-
-    int userChoice;
-    bool validChoice = int.TryParse(Console.ReadLine(), out userChoice);
-
-    while (!validChoice || userChoice < 1 || userChoice > 3)
-    {
-        Console.WriteLine("Invalid input. Please enter a number from 1 to 3.");
-        Console.Write(">");
-        validChoice = int.TryParse(Console.ReadLine(), out userChoice);
-    }
-
-    switch (userChoice)
-    {
-        case 1:
-            PerformTransaction();
-            break;
-        case 2:
-            // Display main menu
-            break;
-        case 3:
-            // Quit the
-            break;
-    }
-}
- 
     /**************************************************************************************************************/
     // Perform Transaction Sections
+    /**************************************************************************************************************/
+    
+    /**************************************************************************************************************/
+    // view account infomation
+    /**************************************************************************************************************/
+    
+    /**************************************************************************************************************/
+    // view account infromation
     /**************************************************************************************************************/
 }

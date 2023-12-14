@@ -4,7 +4,8 @@ namespace FinalProject;
 
 public class SingleCrTransaction : Transaction
 {
-    public SingleCrTransaction(decimal amount, long accountNumber, decimal accountBalance, string transactionDes, long foreignKey) :
+    public SingleCrTransaction(decimal amount, long accountNumber, decimal accountBalance, string transactionDes,
+        long foreignKey) :
         base(amount, accountNumber, accountBalance, transactionDes)
     {
         _transactionType = "CR";
@@ -13,13 +14,14 @@ public class SingleCrTransaction : Transaction
 
     public SingleCrTransaction(string[] data) : base(data)
     {
+        _transactionType = "CR";
     }
 
     public override string GetStringRepresentation()
     {
         return
             //{_transactionId}|{_transactionType}|{_amount}|{_accountNumber}|{_accountBalance}|{_transactiondDateTime}|{_transactionDes}
-            $"{nameof(SingleDrTransaction)}+{_transactionId}|{_transactionType}|{_amount}|{_accountNumber}|{_accountBalance}|{_transactionDate}|{_transactionDes}";
+            $"{nameof(SingleCrTransaction)}+{_transactionId}|{_transactionType}|{_amount}|{_accountNumber}|{_accountBalance}|{_transactionDate}|{_transactionDes}";
     }
 
     public override string TransactionAlert()

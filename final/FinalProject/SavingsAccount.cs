@@ -19,15 +19,15 @@ public class SavingsAccount : Account
     public SavingsAccount(string[] textDAta) : base(textDAta)
     {
         _interestRAte = 0.05m;
-        _startTime = DateTime.Parse(textDAta[5]);
-        _endTime = DateTime.Parse(textDAta[6]); // This can be changed for testing
+        _startTime = DateTime.Parse(textDAta[6]);
+        _endTime = DateTime.Parse(textDAta[7]);
         _interestCache = new Dictionary<Transaction, decimal>();
     }
 
     public override string GetStringRepresentation()
     {
         return
-            $"{nameof(SavingsAccount)}+{_accountHolder}|{_accountNumber}|{_accountBalance}|{_accountEmail}|{_creationDAte}|{_startTime}|{_endTime}|{_foreignKey}";
+            $"{nameof(SavingsAccount)}+{_accountHolder}|{_accountNumber}|{_accountBalance}|{_accountEmail}|{_creationDAte}|{_foreignKey}|{_startTime}|{_endTime}";
     }
 
     public Dictionary<Transaction, decimal> GetCachedInterest => _interestCache;
@@ -75,10 +75,12 @@ public class SavingsAccount : Account
             if (cachedInterest > 0)
             {
                 Transaction interestTransaction =
-                    new SingleCrTransaction(cachedInterest, _accountNumber, _accountBalance, "Earned Interest", _accountNumber);
+                    new SingleCrTransaction(cachedInterest, _accountNumber, _accountBalance, "Earned Interest",
+                        _accountNumber);
                 _transactionsHistory.Add(interestTransaction);
                 SendAlert(interestTransaction, "quinTekc", "Earned Interest");
             }
+
             Console.WriteLine(cachedInterest > 0 ? "Interest Added successfully" : "No interest added.");
         }
     }

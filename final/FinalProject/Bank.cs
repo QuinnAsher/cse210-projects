@@ -19,6 +19,7 @@ public class Bank
         _customersList.Add(customer);
     }
 
+    public int NumberOfCustomers => GetCustomersList.Count;
 
     public override string ToString()
     {

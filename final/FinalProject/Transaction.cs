@@ -25,13 +25,16 @@ public abstract class Transaction
 
     protected Transaction(string[] data)
     {
+        //            $"{nameof(SingleDrTransaction)}+{_transactionId}|{_transactionType}|{_amount}|{_accountNumber}|{_accountBalance}|{_transactionDate}|{_transactionDes}";
+
+        _transactionId = data[0];
+        // _transactionType = data[1];
         _amount = decimal.Parse(data[2]);
-        _transactionType = data[1];
         _accountNumber = long.Parse(data[3]);
         _accountBalance = decimal.Parse(data[4]);
-        _transactionId = data[1];
         _transactionDate = DateTime.Parse(data[5]);
         _transactionDes = data[6];
+
     }
 
 

@@ -1,4 +1,6 @@
-﻿namespace FinalProject;
+﻿using System.Text;
+
+namespace FinalProject;
 
 public static class ObjectCreator
 {
@@ -12,59 +14,108 @@ public static class ObjectCreator
     }
 
 
-    public static void SaveTransaction(Account account)
+    public static void SaveAllTransactions(Bank bank)
     {
         var filePath = EnsureValidExtension("transactions_data");
-
-        var writer = new StreamWriter(filePath, true); // append to file TODO; there might be issue with appending to file
+        
+        // Open the file in append mode
+        var writer = new StreamWriter(filePath);
         using (writer)
         {
-            foreach (var t in account.GetTransactionHistory)
+            foreach (var customer in bank.GetCustomersList)
             {
-                bool transactionExit = File.ReadAllLines(filePath).Any(line => line.Contains(t.GetTransactionId));
-                if (transactionExit) continue; 
-                writer.WriteLine(t.GetStringRepresentation());
+                // Get current customer's account and transaction history
+                var customerAccount = customer.GetCustomerAccount;
+                var accountTransactions = customerAccount.GetTransactionHistory;
+
+                // Loop through each transaction and write its string representation
+                foreach (var transaction in accountTransactions)
+                {
+                    writer.WriteLine(transaction.GetStringRepresentation());
+                }
             }
         }
-        
-        // save the account af
-        SaveAccount(account);
     }
 
-    private static void LoadTransaction(Account account)
+
+    public static void LoadAllTransaction(Bank bank)
     {
         var filePath = EnsureValidExtension("transactions_data");
         var lines = File.ReadAllLines(filePath);
-
-        foreach (var line in lines)
+        
+        // string[] lines = {
+        //     "SingleCrTransaction+ee3ec440057a4d57b0abbb7557742caf|CR|1000|3468165618|1000|14/12/2023 20:43:57|Deposit",
+        //     "SingleDrTransaction+555b7a9c01ff4614893efe5c7b648104|DR|1.5|3468165618|998.5|14/12/2023 20:43:57|Deposit Charge",
+        // };
+        // create a new dictionary object to associate account with transactions
+        var transactionMap = new Dictionary<long, List<Transaction>>();
+        foreach (var line in lines) 
         {
-            if (string.IsNullOrEmpty(line)) continue;
-
-            var parts = line.Split("+");
-            var transactionType = parts[0];
-            var transactionDetails = parts[1];
-
-            // create a Transaction Object
-            var transaction = CreateTransaction(transactionType, transactionDetails);
-            
-            // get the foreign key to associate an account with a transaction
-            if (IsForeignKeyMatch(transaction) && !IsContainTransaction(transaction))
+            //TODO: come and fix the bug that does not add the first transactions to the list;
+            //: this issue might be caused by the logic of adding the first transaction from the
+            // bank history
+            try
             {
-                // load the transactions to the associated account
-                account.AddTransaction(transaction);
+                 // if (string.IsNullOrEmpty(line)) continue;
+                var parts = line.Split("+");
+                {
+                    var transactionType = parts[0];
+                    var transactionDetails = parts[1];
+
+                    // create a Transaction Object
+                    var transaction = CreateTransaction(transactionType, transactionDetails);
+
+                    // this condition checks for a key which is the account number, and if not found it creates a new
+                    // key value pair(foreignKey: list<Transactions>) and add the current iterated transaction to the list
+                    if (!transactionMap.TryGetValue(transaction.GetForeignKey, out var transactionsList))
+                    {
+                        transactionsList = new List<Transaction>();
+                        transactionMap[transaction.GetForeignKey] = new List<Transaction>();
+                        // transactionsList.Add(transaction);
+                    }
+
+                    transactionsList.Add(transaction);
+
+                    // associating transactions with account
+
+                    foreach (var account in bank.GetCustomersList.Select(c => c.GetCustomerAccount))
+                    {
+                        var transactions = transactionMap.GetValueOrDefault(account.GetAccountNumber);
+                        if (transactions != null)
+                        {
+                            foreach (var t in transactions)
+                            {
+                                if (!IsContainTransaction(t, account)) account.AddTransaction(t);
+                            }
+
+                        }
+
+                    }
+                }
+                //
+                // else
+                // {
+                //     Console.WriteLine($"Error the length of the array is: {parts.Length}");
+                // }
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
             }
         }
 
+
         return;
-        
-        bool IsContainTransaction(Transaction transaction)
+
+        bool IsContainTransaction(Transaction transaction, Account a)
         {
-            return account.GetTransactionHistory.Any(t => t.GetTransactionId == transaction.GetTransactionId);
+            return a.GetTransactionHistory.Any(t => t.GetTransactionId == transaction.GetTransactionId);
         }
 
-        bool IsForeignKeyMatch(Transaction transaction)
+        bool IsForeignKeyMatch(Transaction transaction, Account a)
         {
-            return account.GetAccountNumber == transaction.GetForeignKey;
+            return a.GetAccountNumber == transaction.GetForeignKey;
         }
     }
 
@@ -111,28 +162,18 @@ public static class ObjectCreator
     }
 
 
-    private static void SaveAccount(Account account)
+    public static void SaveAllAccounts(Bank bank)
     {
         try
         {
             var filePath = EnsureValidExtension("accounts_data");
-            var lines = File.ReadLines(filePath).ToList();
-            bool updated = false;
-            
-            for (int i = 0; i < lines.Count; i++)
-            {
-                if (lines.Contains(account.GetStringRepresentation()))
-                {
-                    lines[i] = account.GetStringRepresentation();
-                    updated = true;
-                }
-            }
+            var writer = new StreamWriter(filePath);
 
-            if (!updated)
+            using (writer)
             {
-                lines.Add(account.GetStringRepresentation());
+                foreach (var c in bank.GetCustomersList)
+                    writer.WriteLine(c.GetCustomerAccount.GetStringRepresentation());
             }
-
         }
         catch (Exception e)
         {
@@ -141,7 +182,7 @@ public static class ObjectCreator
     }
 
 
-    private static void LoadAccount(Customer customer)
+    public static void LoadAllAccounts(Bank bank)
     {
         var filePath = EnsureValidExtension("accounts_data");
 
@@ -158,11 +199,9 @@ public static class ObjectCreator
             var account = CreateAccount(accountType, accountDetails);
 
             // This associates an account with a customer
-            if (customer.GetCustomerId == account.GetForeignKey)
-            {
-                customer.SetAccount = account;
-            }
-           
+            var customer =
+                bank.GetCustomersList.FirstOrDefault(customer => customer.GetCustomerId == account.GetForeignKey);
+            if (customer != null) customer.SetAccount = account;
         }
 
         return;
@@ -200,19 +239,16 @@ public static class ObjectCreator
     }
 
 
-    public static void SaveCustomer(Bank bank, string customerId, string filePath)
+    public static void SaveCustomer(Bank bank, string filePath)
     {
         filePath = EnsureValidExtension(filePath);
 
-        var writer = new StreamWriter(filePath, true);
+        var writer = new StreamWriter(filePath);
         using (writer)
         {
-            var customer = bank.GetCustomersList.FirstOrDefault(c => customerId == c.GetCustomerId);
-            if (customer != null)
-            {
-                writer.WriteLine(customer.GetStringRepresentation);
-
-            }
+            // var customer = bank.GetCustomersList.FirstOrDefault(c => customerId == c.GetCustomerId);
+            // if (customer != null) writer.WriteLine(customer.GetStringRepresentation);
+            foreach (var customer in bank.GetCustomersList) writer.WriteLine(customer.GetStringRepresentation);
         }
     }
 
@@ -229,10 +265,10 @@ public static class ObjectCreator
 
             //create customer objects
             customer = new Customer(line.Split("|"));
-            
+
             // load account and transactions to associate them to customer
-            LoadAccount(customer);
-            LoadTransaction(customer.GetCustomerAccount);
+            // LoadAccount(bank);
+            // LoadTransaction(bank);
 
             // add customer to bank list
             if (!IsContainCustomer(customer)) bank.AddCustomers(customer);
@@ -271,11 +307,10 @@ public static class ObjectCreator
         foreach (var line in lines)
         {
             // skip empty line
-            if (string.IsNullOrEmpty(line)) continue;
+            // if (string.IsNullOrEmpty(line)) continue;
 
             // call the LoadCustomer method
-            Customer customer = LoadCustomer(bank, filePath);
+            var customer = LoadCustomer(bank, filePath);
         }
-        
     }
 }

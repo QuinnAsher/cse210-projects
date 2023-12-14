@@ -13,6 +13,7 @@ public class SingleDrTransaction : Transaction
 
     public SingleDrTransaction(string[] data) : base(data)
     {
+        _transactionType = "DR";
     }
 
     public override string GetStringRepresentation()
